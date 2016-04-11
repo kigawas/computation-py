@@ -28,6 +28,9 @@ class Number(object):
     def reducible(self):
         return False
 
+    def evaluate(self, environment):
+        return self
+
 
 class Boolean(object):
     def __init__(self, value):
@@ -51,6 +54,27 @@ class Boolean(object):
     def reducible(self):
         return False
 
+    def evaluate(self, environment):
+        return self
+
+
+class Variable(object):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+    @property
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        return environment[self.name]
+
+    def evaluate(self, environment):
+        return environment[self.name]
+
 
 class Add(object):
     def __init__(self, left, right):
@@ -70,6 +94,10 @@ class Add(object):
             return Add(self.left, self.right.reduce(environment))
         else:
             return Number(self.left.value + self.right.value)
+
+    def evaluate(self, environment):
+        return Number(self.left.evaluate(environment).value +
+                      self.right.evaluate(environment).value)
 
 
 class Multiply(object):
@@ -91,6 +119,10 @@ class Multiply(object):
         else:
             return Number(self.left.value * self.right.value)
 
+    def evaluate(self, environment):
+        return Number(self.left.evaluate(environment).value *
+                      self.right.evaluate(environment).value)
+
 
 class LessThan(object):
     def __init__(self, left, right):
@@ -111,20 +143,9 @@ class LessThan(object):
         else:
             return Boolean(self.left.value < self.right.value)
 
-
-class Variable(object):
-    def __init__(self, name):
-        self.name = name
-
-    def __str__(self):
-        return "{}".format(self.name)
-
-    @property
-    def reducible(self):
-        return True
-
-    def reduce(self, environment):
-        return environment[self.name]
+    def evaluate(self, environment):
+        return Boolean(self.left.evaluate(environment).value <
+                       self.right.evaluate(environment).value)
 
 
 class TypeTest(unittest.TestCase):
@@ -162,6 +183,18 @@ class ExprTest(unittest.TestCase):
         while expr.reducible:
             expr = expr.reduce(en)
         self.assertEqual(expr, Boolean(True))
+
+
+class EvalTest(unittest.TestCase):
+    def test_type(self):
+        self.assertEqual(Number(23).evaluate({}), Number(23))
+        self.assertEqual(Variable('x').evaluate({'x': Number(23)}), Number(23))
+        self.assertEqual(
+            LessThan(
+                Add(
+                    Variable('x'), Number(2)),
+                Variable('y')).evaluate({'x': Number(2),
+                                         'y': Number(5)}), Boolean(True))
 
 
 if __name__ == '__main__':
