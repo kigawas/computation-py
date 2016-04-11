@@ -2,7 +2,7 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from expressions import Variable, Add, Number, Boolean
+from expressions import Variable, Add, Number, Boolean, LessThan, Multiply
 from utils import merge_dict
 
 
@@ -46,7 +46,7 @@ class If(object):
         self.alternative = alternative
 
     def __str__(self):
-        return 'if ({}) \{ {} \} else \{ {} \}'.format(
+        return 'if ({0}) {{ {1} }} else {{ {2} }}'.format(
             self.condition, self.consequence, self.alternative)
 
     @property
@@ -63,8 +63,6 @@ class If(object):
                 return self.consequence, environment
             elif self.condition == Boolean(False):
                 return self.alternative, environment
-            else:
-                pass
 
 
 class Sequence(object):
@@ -87,13 +85,32 @@ class Sequence(object):
             return Sequence(reduced_first, self.second), reduced_env
 
 
+class While(object):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+    def __str__(self):
+        return 'while ({}) {{ {} }}'.format(self.condition, self.body)
+
+    @property
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        return If(self.condition, Sequence(self.body, self),
+                  DoNothing()), environment
+
+
 class StatementTest(unittest.TestCase):
     def test_donothing(self):
         self.assertEqual(DoNothing(), DoNothing())
+        self.assertEqual(str(DoNothing()), 'Do nothing')
         self.assertNotEqual(DoNothing(), 1)
 
     def test_assign(self):
         st = Assign('x', Add(Variable('x'), Number(1)))
+        self.assertEqual(str(st), 'x = (x + 1)')
         en = {'x': Number(2)}
         while st.reducible:
             st, en = st.reduce(en)
@@ -101,6 +118,7 @@ class StatementTest(unittest.TestCase):
 
     def test_if_true(self):
         st = If(Variable('x'), Assign('y', Number(1)), Assign('y', Number(2)))
+        self.assertEqual(str(st), 'if (x) { y = 1 } else { y = 2 }')
         en = {'x': Boolean(True)}
         while st.reducible:
             st, en = st.reduce(en)
@@ -120,11 +138,23 @@ class StatementTest(unittest.TestCase):
             Assign('x', Add(
                 Number(1), Number(2))), Assign('y', Add(
                     Variable('x'), Number(3))))
+        self.assertEqual(str(seq), 'x = (1 + 2); y = (x + 3)')
         en = {}
         while seq.reducible:
             seq, en = seq.reduce(en)
         self.assertEqual(seq, DoNothing())
         self.assertEqual(en['x'], Number(3))
+
+    def test_while(self):
+        seq = While(
+            LessThan(
+                Variable('x'), Number(5)), Assign('x', Multiply(
+                    Variable('x'), Number(2))))
+        en = {'x': Number(1)}
+        self.assertEqual(str(seq), 'while ((x < 5)) { x = (x * 2) }')
+        while seq.reducible:
+            seq, en = seq.reduce(en)
+        self.assertEqual(en['x'], Number(8))
 
 
 if __name__ == '__main__':
