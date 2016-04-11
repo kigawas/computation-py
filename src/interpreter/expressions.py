@@ -8,6 +8,8 @@ import unittest
 @total_ordering
 class Number(object):
     def __init__(self, value):
+        if not isinstance(value, int):
+            raise TypeError('Not Number')
         self.value = value
 
     def __repr__(self):
@@ -29,6 +31,8 @@ class Number(object):
 
 class Boolean(object):
     def __init__(self, value):
+        if not isinstance(value, bool):
+            raise TypeError('Not Boolean')
         self.value = value
 
     def __repr__(self):
