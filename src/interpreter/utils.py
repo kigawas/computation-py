@@ -1,4 +1,6 @@
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
+
+import unittest
 
 
 def merge_dict(dic1, dic2):
@@ -11,11 +13,12 @@ def merge_dict(dic1, dic2):
     return dm
 
 
-def test():
-    d1 = {'a': 1, 'b': 2, 'c': 3}
-    d2 = {'a': 2}
-    print(merge_dict(d1, d2))
+class UtilTest(unittest.TestCase):
+    def test_merge_dict(self):
+        d1 = {'a': 1, 'b': 2, 'c': 3}
+        d2 = {'a': 2}
+        self.assertEqual(merge_dict(d1, d2), {'a': 2, 'b': 2, 'c': 3})
 
 
 if __name__ == '__main__':
-    test()
+    unittest.main()
