@@ -17,6 +17,9 @@ class DoNothing(object):
     def reducible(self):
         return False
 
+    def evaluate(environment):
+        return environment
+
 
 class Assign(object):
     def __init__(self, name, expression):
@@ -37,6 +40,10 @@ class Assign(object):
         else:
             return DoNothing(), merge_dict(environment, {self.name:
                                                          self.expression})
+
+    def evaluate(self, environment):
+        return merge_dict(environment, {self.name:
+                                        self.expression.evaluate(environment)})
 
 
 class If(object):
@@ -64,6 +71,12 @@ class If(object):
             elif self.condition == Boolean(False):
                 return self.alternative, environment
 
+    def evaluate(self, environment):
+        if self.condition.evaluate(environment) == Boolean(True):
+            return self.consequence.evaluate(environment)
+        elif self.condition.evaluate(environment) == Boolean(False):
+            return self.alternative.evaluate(environment)
+
 
 class Sequence(object):
     def __init__(self, first, second):
@@ -84,6 +97,9 @@ class Sequence(object):
             reduced_first, reduced_env = self.first.reduce(environment)
             return Sequence(reduced_first, self.second), reduced_env
 
+    def evaluate(self, environment):
+        return self.second.evaluate(self.first.evaluate(environment))
+
 
 class While(object):
     def __init__(self, condition, body):
@@ -100,6 +116,21 @@ class While(object):
     def reduce(self, environment):
         return If(self.condition, Sequence(self.body, self),
                   DoNothing()), environment
+
+    def evaluate(self, environment):
+        '''Optimize tail recursion'''
+        while True:
+            if self.condition.evaluate(environment) == Boolean(False):
+                return environment
+            elif self.condition.evaluate(environment) == Boolean(True):
+                environment = self.body.evaluate(environment)
+
+    def evaluate_with_recursion(self, environment):
+        if self.condition.evaluate(environment) == Boolean(True):
+            return self.evaluate_with_recursion(self.body.evaluate(
+                environment))
+        elif self.condition.evaluate(environment) == Boolean(False):
+            return environment
 
 
 class StatementTest(unittest.TestCase):
@@ -155,6 +186,45 @@ class StatementTest(unittest.TestCase):
         while seq.reducible:
             seq, en = seq.reduce(en)
         self.assertEqual(en['x'], Number(8))
+
+
+class EvalTest(unittest.TestCase):
+    def test_sequence(self):
+        st = Sequence(
+            Assign('x', Add(
+                Number(1), Number(1))), Assign('y', Add(
+                    Variable('x'), Number(3))))
+        en = st.evaluate({})
+        self.assertEqual(en['x'], Number(2))
+        self.assertEqual(en['y'], Number(5))
+
+    def test_if_true_and_false(self):
+        st = If(
+            LessThan(
+                Variable('x'), Number(5)), Assign('x', Number(2)), Assign(
+                    'x', Multiply(
+                        Variable('x'), Variable('x'))))
+        en = st.evaluate({'x': Number(2)})
+        self.assertEqual(en['x'], Number(2))
+
+        st = If(
+            LessThan(
+                Variable('x'), Number(5)), Assign('x', Number(2)), Assign(
+                    'x', Multiply(
+                        Variable('x'), Variable('x'))))
+        en = st.evaluate({'x': Number(10)})
+        self.assertEqual(en['x'], Number(100))
+
+    def test_while(self):
+        st = While(
+            LessThan(
+                Variable('x'), Number(1000)), Assign('x', Add(
+                    Variable('x'), Number(1))))
+        en = st.evaluate({'x': Number(1)})
+        self.assertEqual(en['x'], Number(1000))
+
+        with self.assertRaises(RuntimeError):
+            st.evaluate_with_recursion({'x': Number(1)})
 
 
 if __name__ == '__main__':
