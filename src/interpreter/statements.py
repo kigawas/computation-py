@@ -46,7 +46,8 @@ class If(object):
         self.alternative = alternative
 
     def __str__(self):
-        return 'if ({}) \{ {} \} else \{ {} \}'.format(self.condition, self.consequence, self.alternative)
+        return 'if ({}) \{ {} \} else \{ {} \}'.format(
+            self.condition, self.consequence, self.alternative)
 
     @property
     def reducible(self):
@@ -54,7 +55,9 @@ class If(object):
 
     def reduce(self, environment):
         if self.condition.reducible:
-            return If(self.condition.reduce(environment), self.consequence, self.alternative), environment
+            return If(
+                self.condition.reduce(environment), self.consequence,
+                self.alternative), environment
         else:
             if self.condition == Boolean(True):
                 return self.consequence, environment
@@ -63,7 +66,28 @@ class If(object):
             else:
                 pass
 
-class TestStatements(unittest.TestCase):
+
+class Sequence(object):
+    def __init__(self, first, second):
+        self.first = first
+        self.second = second
+
+    def __str__(self):
+        return '{}; {}'.format(self.first, self.second)
+
+    @property
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        if self.first == DoNothing():
+            return self.second, environment
+        else:
+            reduced_first, reduced_env = self.first.reduce(environment)
+            return Sequence(reduced_first, self.second), reduced_env
+
+
+class StatementTest(unittest.TestCase):
     def test_donothing(self):
         self.assertEqual(DoNothing(), DoNothing())
         self.assertNotEqual(DoNothing(), 1)
@@ -75,13 +99,32 @@ class TestStatements(unittest.TestCase):
             st, en = st.reduce(en)
         self.assertEqual(en['x'], Number(3))
 
-    def test_if(self):
+    def test_if_true(self):
         st = If(Variable('x'), Assign('y', Number(1)), Assign('y', Number(2)))
         en = {'x': Boolean(True)}
         while st.reducible:
             st, en = st.reduce(en)
         self.assertEqual(en['y'], Number(1))
         self.assertEqual(en['x'], Boolean(True))
+
+    def test_if_false(self):
+        st = If(Variable('x'), Assign('y', Number(1)), DoNothing())
+        en = {'x': Boolean(False)}
+        while st.reducible:
+            st, en = st.reduce(en)
+        self.assertEqual(st, DoNothing())
+        self.assertEqual(en['x'], Boolean(False))
+
+    def test_sequence(self):
+        seq = Sequence(
+            Assign('x', Add(
+                Number(1), Number(2))), Assign('y', Add(
+                    Variable('x'), Number(3))))
+        en = {}
+        while seq.reducible:
+            seq, en = seq.reduce(en)
+        self.assertEqual(seq, DoNothing())
+        self.assertEqual(en['x'], Number(3))
 
 
 if __name__ == '__main__':

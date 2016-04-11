@@ -153,11 +153,10 @@ class ExprTest(unittest.TestCase):
         self.assertEqual(expr, Number(12))
 
     def test_less(self):
-        expr = LessThan(Variable('x'), Number(3))
-        en = {'x':Number(1)}
+        expr = LessThan(Variable('x'), Variable('y'))
+        en = {'x': Number(1), 'y': Number(3)}
         while expr.reducible:
             expr = expr.reduce(en)
-            print(expr)
         self.assertEqual(expr, Boolean(True))
 
 
