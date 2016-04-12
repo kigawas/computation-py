@@ -3,7 +3,6 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 from farule import FARule
-
 from utils import detect
 
 
@@ -41,14 +40,14 @@ class DFA(object):
 
 
 class DFADesign(object):
-    def __init__(self, current_state, accept_states, rulebook):
-        self.current_state = current_state
+    def __init__(self, start_state, accept_states, rulebook):
+        self.start_state = start_state
         self.accept_states = accept_states
         self.rulebook = rulebook
 
     @property
     def to_dfa(self):
-        return DFA(self.current_state, self.accept_states, self.rulebook)
+        return DFA(self.start_state, self.accept_states, self.rulebook)
 
     def accepts(self, string):
         return self.to_dfa.read_string(string).accepting
@@ -69,16 +68,15 @@ class DFATest(unittest.TestCase):
                                 ])
 
         dfa = DFA(1, [3], rulebook)
-        self.assertFalse(dfa.accepting)
-        dfa.read_character('b')
-        self.assertFalse(dfa.accepting)
-        [dfa.read_character('a') for i in range(3)]
-        self.assertFalse(dfa.accepting)
-        dfa.read_character('b')
-        self.assertTrue(dfa.accepting)
+        self.assertFalse(dfa.read_character('b').accepting)
+
+        self.assertFalse(any([dfa.read_character('a').accepting for i in range(
+            3)]))
+
+        self.assertTrue(dfa.read_character('b').accepting)
+
         dfa = DFA(1, [3], rulebook)
-        dfa.read_string('baaab')
-        self.assertTrue(dfa.accepting)
+        self.assertTrue(dfa.read_string('baaab').accepting)
 
     def test_dfa_design(self):
         rulebook = DFARulebook([FARule(1, 'a', 2), FARule(1, 'b', 1), FARule(
