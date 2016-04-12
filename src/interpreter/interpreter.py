@@ -35,6 +35,7 @@ def test():
             Variable('x'), Number(5)), Assign('x', Multiply(
                 Variable('x'), Number(3))))
     Machine(seq, {'x': Number(1)}).run()
+    print(seq.to_python)
 
 
 if __name__ == '__main__':

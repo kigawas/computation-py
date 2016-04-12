@@ -154,5 +154,11 @@ class While(object):
 
     @property
     def to_python(self):
-        return '''def f(e):\n    while ({})(e): e = ({})(e) \n    return e'''.format(
-            self.condition.to_python, self.body.to_python)
+        # work around using Y-combinator because python don't allow lambda expression including `while`
+        # so I implemented while using recursion
+        # but notice that Python does no tail recursion optimization
+        # it may raise RuntimeError when running too many whiles
+        # check the limit by `import sys; sys.getrecursionlimit()`
+        return '(lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args))))(lambda wh: lambda e: e if ({condition})(e) is False else wh(({body})(e)))'.format(
+            condition=self.condition.to_python,
+            body=self.body.to_python)
