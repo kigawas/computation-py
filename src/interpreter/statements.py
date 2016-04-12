@@ -89,7 +89,8 @@ class If(object):
     @property
     def to_python(self):
         return 'lambda e: ({})(e) if ({})(e) else ({})(e)'.format(
-            self.consequence.to_python, self.condition.to_python, self.alternative.to_python)
+            self.consequence.to_python, self.condition.to_python,
+            self.alternative.to_python)
 
 
 class Sequence(object):
@@ -116,8 +117,8 @@ class Sequence(object):
 
     @property
     def to_python(self):
-        return 'lambda e: ({1})(({0})(e))'.format(self.first.to_python, self.second.to_python)
-
+        return 'lambda e: ({1})(({0})(e))'.format(self.first.to_python,
+                                                  self.second.to_python)
 
 
 class While(object):
@@ -150,6 +151,8 @@ class While(object):
                 environment))
         elif self.condition.evaluate(environment) == Boolean(False):
             return environment
+
     @property
     def to_python(self):
-        return '''def f(e):\n    while ({})(e): e = ({})(e) \n    return e'''.format(self.condition.to_python, self.body.to_python)
+        return '''def f(e):\n    while ({})(e): e = ({})(e) \n    return e'''.format(
+            self.condition.to_python, self.body.to_python)
