@@ -154,10 +154,10 @@ class While(object):
 
     @property
     def to_python(self):
-        # work around using Y-combinator because python don't allow lambda expression including `while`
+        # work around using Y-combinator because Python doesn't allow lambda expression including `while`
         # so I implemented while using recursion
         # but notice that Python does no tail recursion optimization
-        # it may raise RuntimeError when running too many whiles
+        # it may raise RuntimeError when running too many loop in a while
         # check the limit by `import sys; sys.getrecursionlimit()`
         return '(lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args))))(lambda wh: lambda e: e if ({condition})(e) is False else wh(({body})(e)))'.format(
             condition=self.condition.to_python,
