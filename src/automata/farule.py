@@ -7,6 +7,10 @@ class FARule(object):
         self.character = character
         self.next_state = next_state
 
+    def __repr__(self):
+        return 'FARule({}, {}, {})'.format(self.state, self.character,
+                                           self.next_state)
+
     def __str__(self):
         return '#<FARule {} --{}--> {}'.format(self.state, self.character,
                                                self.next_state)

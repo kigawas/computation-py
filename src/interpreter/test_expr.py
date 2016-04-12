@@ -1,7 +1,8 @@
 from __future__ import print_function, unicode_literals
 import unittest
 
-from  expressions  import *
+from expressions import *
+
 
 class TypeTest(unittest.TestCase):
     def test_number(self):
