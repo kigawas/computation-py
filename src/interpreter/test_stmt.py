@@ -124,11 +124,9 @@ class CodeGenTest(unittest.TestCase):
     def test_while(self):
         st = While(
             LessThan(
-                Variable('x'), Number(1000)), Assign('x', Add(
+                Variable('x'), Number(100)), Assign('x', Add(
                     Variable('x'), Number(1))))
-        #work around because Python doesn't support while statements in lambda expression
-        exec st.to_python
-        self.assertEqual(f({'x': 1}), {'x': 1000})
+        self.assertEqual(eval(st.to_python)({'x': 1}), {'x': 100})
 
 
 if __name__ == '__main__':
