@@ -62,7 +62,7 @@ class If(object):
         self.alternative = alternative
 
     def __str__(self):
-        return 'if ({0}) {{ {1} }} else {{ {2} }}'.format(
+        return 'if ({}) {{ {} }} else {{ {} }}'.format(
             self.condition, self.consequence, self.alternative)
 
     @property
@@ -88,8 +88,8 @@ class If(object):
 
     @property
     def to_python(self):
-        return 'lambda e: ({})(e) if ({})(e) else ({})(e)'.format(
-            self.consequence.to_python, self.condition.to_python,
+        return 'lambda e: ({1})(e) if ({0})(e) else ({2})(e)'.format(
+            self.condition.to_python, self.consequence.to_python,
             self.alternative.to_python)
 
 

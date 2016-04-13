@@ -55,22 +55,22 @@ class EvalTest(unittest.TestCase):
 
 class CodeGenTest(unittest.TestCase):
     def test_type(self):
-        n1 = Number(5).to_python
-        b1 = Boolean(False).to_python
-        v1 = Variable('x').to_python
+        n1 = Number(5)
+        b1 = Boolean(False)
+        v1 = Variable('x')
 
-        self.assertEqual(eval(n1)({}), 5)
-        self.assertEqual(eval(b1)({}), False)
-        self.assertEqual(eval(v1)({'x': 7}), 7)
+        self.assertEqual(eval(n1.to_python)({}), 5)
+        self.assertEqual(eval(b1.to_python)({}), False)
+        self.assertEqual(eval(v1.to_python)({'x': 7}), 7)
 
     def test_expr(self):
-        a1 = Add(Variable('x'), Number(1)).to_python
-        m1 = Multiply(Variable('x'), Number(9)).to_python
-        l1 = LessThan(Variable('x'), Variable('y')).to_python
+        a1 = Add(Variable('x'), Number(1))
+        m1 = Multiply(Variable('x'), Number(9))
+        l1 = LessThan(Variable('x'), Variable('y'))
 
-        self.assertEqual(eval(a1)({'x': 7}), 8)
-        self.assertEqual(eval(m1)({'x': 9}), 81)
-        self.assertEqual(eval(l1)({'x': 7, 'y': 8}), True)
+        self.assertEqual(eval(a1.to_python)({'x': 7}), 8)
+        self.assertEqual(eval(m1.to_python)({'x': 9}), 81)
+        self.assertEqual(eval(l1.to_python)({'x': 7, 'y': 8}), True)
 
 
 if __name__ == '__main__':
