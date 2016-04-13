@@ -95,7 +95,7 @@ class EvalTest(unittest.TestCase):
         self.assertEqual(en['x'], Number(1000))
 
         with self.assertRaises(RuntimeError):
-            st.evaluate_with_recursion({'x': Number(1)})
+            st.evaluate_with_recursion({'x': Number(-1000)})
 
 
 class CodeGenTest(unittest.TestCase):
