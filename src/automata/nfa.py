@@ -19,10 +19,17 @@ class NFARulebook(object):
         return set(sum(
             [self.follow_rules_for(s, character) for s in states], []))
 
+    def follow_free_moves(self, states):
+        more_states = self.next_states(states, None)
+        if more_states.issubset(states):
+            return states
+        else:
+            return self.follow_free_moves(more_states.union(states))
+
 
 class NFA(object):
     def __init__(self, current_states, accept_states, rulebook):
-        self.current_states = set(current_states)
+        self._current_states = set(current_states)
         self.accept_states = set(accept_states)
         self.rulebook = rulebook
 
@@ -31,7 +38,7 @@ class NFA(object):
         return not set.isdisjoint(self.current_states, self.accept_states)
 
     def read_character(self, character):
-        self.current_states = self.rulebook.next_states(self.current_states,
+        self._current_states = self.rulebook.next_states(self.current_states,
                                                         character)
         return self
 
@@ -40,6 +47,9 @@ class NFA(object):
             self.read_character(c)
         return self
 
+    @property
+    def current_states(self):
+        return self.rulebook.follow_free_moves(self._current_states)
 
 class NFADesign(object):
     def __init__(self, start_state, accept_states, rulebook):
@@ -96,6 +106,20 @@ class NFATest(unittest.TestCase):
         self.assertTrue(nfa.accepts('bbbbb'))
         self.assertFalse(nfa.accepts('bbabb'))
 
+    def test_free_move(self):
+        rulebook = NFARulebook([
+            FARule(1, None, 2), FARule(1, None, 4), FARule(2, 'a', 3),
+            FARule(3, 'a', 2), FARule(4, 'a', 5), FARule(5, 'a', 6),
+            FARule(6, 'a', 4)
+        ])  #yapf: disable
+        self.assertEqual(rulebook.next_states([1], None), set([2, 4]))
+        self.assertEqual(rulebook.follow_free_moves([1]), set([1, 2, 4]))
+        nfa_design = NFADesign(1,[2,4],rulebook)
+        self.assertTrue(nfa_design.accepts('aaaaaa'))
+        self.assertTrue(nfa_design.accepts('aaa'))
+        self.assertTrue(nfa_design.accepts('aa'))
+        self.assertFalse(nfa_design.accepts('aaaaa'))
+        self.assertFalse(nfa_design.accepts('a'))
 
 if __name__ == '__main__':
     unittest.main()
