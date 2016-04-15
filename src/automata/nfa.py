@@ -1,7 +1,6 @@
 from __future__ import print_function, unicode_literals
 
 import unittest
-from pprint import pprint
 
 from farule import FARule
 from dfa import DFADesign, DFARulebook
