@@ -4,11 +4,7 @@ import unittest
 
 from farule import FARule
 from nfa import NFARulebook, NFADesign
-
-
-class State(object):
-    def __repr__(self):
-        return 'State<{:}>'.format(str(id(self))[-3:])
+from state import State
 
 
 class Pattern(object):
@@ -147,7 +143,7 @@ class PatternTest(unittest.TestCase):
 
         pattern = Repeat(Concatenate(
             Literal('a'), Choose(Empty(), Literal('b'))))
-        self.assertEqual(repr(pattern),'/(a(|b))*/')
+        self.assertEqual(repr(pattern), '/(a(|b))*/')
         self.assertTrue(pattern.matches(''))
         self.assertTrue(pattern.matches('a'))
         self.assertTrue(pattern.matches('ab'))
