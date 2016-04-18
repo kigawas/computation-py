@@ -15,4 +15,6 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 
 3. Simulating automata such as DFA, NFA, PDA etc.  
 
-4. Stay tuned..
+4. Using automata to build a simple regular expression engine.
+
+5. Stay tuned..
