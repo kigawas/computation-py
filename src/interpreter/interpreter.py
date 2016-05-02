@@ -2,7 +2,6 @@ from __future__ import print_function, unicode_literals
 
 from expressions import Add, Boolean, Multiply, LessThan, Number, Variable
 from statements import Assign, If, Sequence, While
-from utils import merge_dict
 
 
 class Machine(object):

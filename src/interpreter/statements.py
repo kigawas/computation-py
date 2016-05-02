@@ -51,7 +51,8 @@ class Assign(object):
 
     @property
     def to_python(self):
-        return 'lambda e: merge_dict(e, {{ \'{}\': ({})(e) }})'.format(
+        '''Use dict comprehension to eliminate outer function dependency'''
+        return 'lambda e:{{k: v for d in (e, {{\'{}\': ({})(e)}}) for k, v in d.items()}}'.format(
             self.name, self.expression.to_python)
 
 
