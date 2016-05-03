@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals
 import unittest
 
-from statements import *
+from interpreter.statements import *
 
 
 class StatementTest(unittest.TestCase):
