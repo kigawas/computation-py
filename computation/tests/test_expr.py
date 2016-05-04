@@ -1,7 +1,7 @@
-from __future__ import print_function, unicode_literals
 import unittest
 
-from interpreter.expressions import *
+from computation.interpreter.expressions import Add, Boolean, Multiply,\
+    LessThan, Number, Variable
 
 
 class TypeTest(unittest.TestCase):
