@@ -3,8 +3,8 @@ language:
 python:
   - "2.7"
 script:
-  python -m computation.tests.test_expr
-  python -m computation.tests.test_stmt
+  - python -m computation.tests.test_expr
+  - python -m computation.tests.test_stmt
 branches:
   only:
     - master
