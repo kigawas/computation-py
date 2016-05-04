@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals
 
-from expressions import Add, Boolean, Multiply, LessThan, Number, Variable
-from statements import Assign, If, Sequence, While
+from expressions import Add, Multiply, LessThan, Number, Variable
+from statements import Assign, Sequence, While
 
 
 class Machine(object):
@@ -21,8 +21,19 @@ class Machine(object):
 
 
 def test():
-    expr = Assign('x', Add(Variable('x'), Number(1)))
-    Machine(expr, {'x': Number(5)}).run()
+    SEP = '=' * 50
+    seq = Assign('x', Add(Variable('x'), Number(1)))
+    Machine(seq, {'x': Number(5)}).run()
+
+    print(SEP)
+
+    seq = Sequence(
+        Assign('x', Add(
+            Number(1), Number(1))), Assign('y', Multiply(
+                Variable('x'), Number(2))))
+    Machine(seq, {}).run()
+
+    print(SEP)
 
     seq = Sequence(
         Assign('x', Add(
@@ -30,11 +41,16 @@ def test():
                 Variable('x'), Number(1))))
     Machine(seq, {}).run()
 
+    print(SEP)
+
     seq = While(
         LessThan(
             Variable('x'), Number(50)), Assign('x', Add(
                 Variable('x'), Number(3))))
     Machine(seq, {'x': Number(1)}).run()
+
+    print(SEP)
+
     print(seq.to_python)
     print(eval(seq.to_python)({'x': 1}))
 

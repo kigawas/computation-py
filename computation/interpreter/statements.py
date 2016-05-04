@@ -1,8 +1,4 @@
-from __future__ import print_function, unicode_literals
-
-import unittest
-
-from expressions import Variable, Add, Number, Boolean, LessThan, Multiply
+from expressions import Boolean
 from utils import merge_dict
 
 

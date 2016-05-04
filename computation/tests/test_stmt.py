@@ -1,7 +1,9 @@
-from __future__ import print_function, unicode_literals
 import unittest
 
-from interpreter.statements import *
+from computation.interpreter.statements \
+    import Assign, If, Sequence, While, DoNothing
+from computation.interpreter.expressions \
+    import Add, Boolean, Multiply, LessThan, Number, Variable
 
 
 class StatementTest(unittest.TestCase):
