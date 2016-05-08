@@ -71,10 +71,13 @@ class Concatenate(Pattern):
 
     @property
     def to_nfa_design(self):
-        first_nfa_design, second_nfa_design = self.first.to_nfa_design, self.second.to_nfa_design
-        start_state, accept_states = first_nfa_design.start_state, second_nfa_design.accept_states
+        first_nfa_design, second_nfa_design = (self.first.to_nfa_design,
+                                               self.second.to_nfa_design)
+        start_state, accept_states = (first_nfa_design.start_state,
+                                      second_nfa_design.accept_states)
 
-        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
+        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules  # NOQA
+
         extra_rules = [FARule(state, None, second_nfa_design.start_state)
                        for state in first_nfa_design.accept_states]
         rulebook = NFARulebook(rules + extra_rules)
@@ -95,10 +98,12 @@ class Choose(Pattern):
 
     @property
     def to_nfa_design(self):
-        first_nfa_design, second_nfa_design = self.first.to_nfa_design, self.second.to_nfa_design
+        first_nfa_design, second_nfa_design = (self.first.to_nfa_design,
+                                               self.second.to_nfa_design)
         start_state = State()
-        accept_states = first_nfa_design.accept_states + second_nfa_design.accept_states
-        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
+        accept_states = first_nfa_design.accept_states + second_nfa_design.accept_states  # NOQA
+
+        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules  # NOQA
         extra_rules = [FARule(start_state, None, nfa_design.start_state)
                        for nfa_design in [first_nfa_design, second_nfa_design]]
         rulebook = NFARulebook(rules + extra_rules)
