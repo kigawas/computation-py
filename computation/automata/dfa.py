@@ -58,7 +58,7 @@ class DFATest(unittest.TestCase):
         rulebook = DFARulebook([
             FARule(1, 'a', 2), FARule(1, 'b', 1), FARule(2, 'a', 2),
             FARule(2, 'b', 3), FARule(3, 'a', 3), FARule(3, 'b', 3)
-        ])  #yapf: disable
+        ])  # yapf: disable
         self.assertEqual(rulebook.next_state(1, 'a'), 2)
         self.assertEqual(rulebook.next_state(1, 'b'), 1)
         self.assertEqual(rulebook.next_state(2, 'b'), 3)
@@ -67,7 +67,7 @@ class DFATest(unittest.TestCase):
         rulebook = DFARulebook([
             FARule(1, 'a', 2), FARule(1, 'b', 1), FARule(2, 'a', 2),
             FARule(2, 'b', 3), FARule(3, 'a', 3), FARule(3, 'b', 3)
-        ])  #yapf: disable
+        ])  # yapf: disable
 
         dfa = DFA(1, [3], rulebook)
         self.assertFalse(dfa.read_character('b').accepting)
@@ -82,7 +82,7 @@ class DFATest(unittest.TestCase):
         rulebook = DFARulebook([
             FARule(1, 'a', 2), FARule(1, 'b', 1), FARule(2, 'a', 2),
             FARule(2, 'b', 3), FARule(3, 'a', 3), FARule(3, 'b', 3)
-        ])  #yapf: disable
+        ])  # yapf: disable
 
         dfa_design = DFADesign(1, [3], rulebook)
         self.assertFalse(dfa_design.accepts('a'))

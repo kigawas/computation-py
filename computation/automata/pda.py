@@ -2,7 +2,6 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from farule import FARule
 from utils import detect
 from state import State
 
@@ -68,7 +67,9 @@ class PDARule(object):
         self.push_characters = push_characters
 
     def applies_to(self, configuration, character):
-        return self.state == configuration.state and self.pop_character == configuration.stack.top and self.character == character
+        return self.state == configuration.state and \
+            self.pop_character == configuration.stack.top and \
+            self.character == character
 
     def next_stack(self, configuration):
         popped_stack = configuration.stack.pop
@@ -159,7 +160,7 @@ class NPDARulebook(object):
         self.rules = rules
 
     def __str__(self):
-        return "{}".format(rules)
+        return "{}".format(self.rules)
 
     def rule_for(self, configuration, character):
         return [rule
@@ -228,7 +229,7 @@ class PDATest(unittest.TestCase):
             PDARule(1, '(', 2, '$', ['b', '$']),
             PDARule(2, '(', 2, 'b', ['b', 'b']), PDARule(2, ')', 2, 'b', []),
             PDARule(2, None, 1, '$', ['$'])
-        ])  #yapf: disable
+        ])  # yapf: disable
 
         configuration = rulebook.next_configuration(configuration, '(')
         self.assertEqual(configuration.stack, Stack(['$', 'b']))
@@ -238,13 +239,11 @@ class PDATest(unittest.TestCase):
             PDARule(1, '(', 2, '$', ['b', '$']),
             PDARule(2, '(', 2, 'b', ['b', 'b']), PDARule(2, ')', 2, 'b', []),
             PDARule(2, None, 1, '$', ['$'])
-        ])  #yapf: disable
+        ])  # yapf: disable
         dpda = DPDA(PDAConfiguration(1, Stack(['$'])), [1], rulebook)
         self.assertTrue(dpda.accepting)
         self.assertFalse(dpda.read_string('(()').accepting)
         self.assertEqual(dpda.current_configuration.state, 2)
-
-        configuration = PDAConfiguration(2, Stack(['$']))
 
         with self.assertRaises(RuntimeError):
             DPDARulebook([PDARule(1, None, 1, '$', ['$'])]).follow_free_moves(
@@ -259,7 +258,7 @@ class PDATest(unittest.TestCase):
             PDARule(1, '(', 2, '$', ['b', '$']),
             PDARule(2, '(', 2, 'b', ['b', 'b']), PDARule(2, ')', 2, 'b', []),
             PDARule(2, None, 1, '$', ['$'])
-        ])  #yapf: disable
+        ])  # yapf: disable
         dpda_design = DPDADesign(1, '$', [1], rulebook)
         self.assertTrue(dpda_design.accepts('(((((((((())))))))))'))
         self.assertTrue(dpda_design.accepts('()(())((()))(()(()))'))
@@ -285,7 +284,7 @@ class PDATest(unittest.TestCase):
             PDARule(2, 'a', 2, 'a', []),
             PDARule(2, 'b', 2, 'b', []),
             PDARule(2, None, 3, '$', ['$'])
-            ])# yapf: disable
+            ])  # yapf: disable
         configuration = PDAConfiguration(1, Stack(['$']))
         npda = NPDA([configuration], [3], rulebook)
         self.assertTrue(npda.accepting)

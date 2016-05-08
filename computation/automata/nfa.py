@@ -86,7 +86,7 @@ class NFASimulation(object):
     def rules_for(self, state):
         return [FARule(
             set(state), character, self.next_state(state, character))
-                for character in self.nfa_design.rulebook.alphabet]
+                for character in self.nfa_design.rulebook.alphabet]  # NOQA
 
     def discover_states_and_rules(self, states):
         states = [frozenset(state) for state in states]
@@ -114,7 +114,7 @@ class NFATest(unittest.TestCase):
             FARule(1, 'a', 1), FARule(1, 'b', 1), FARule(1, 'b', 2),
             FARule(2, 'a', 3), FARule(2, 'b', 3), FARule(3, 'a', 4),
             FARule(3, 'b', 4)
-        ])  #yapf: disable
+        ])  # yapf: disable
         self.assertEqual(rulebook.next_states([1], 'b'), set([1, 2]))
         self.assertEqual(rulebook.next_states([1, 2], 'a'), set([1, 3]))
         self.assertEqual(rulebook.next_states([1, 3], 'b'), set([1, 2, 4]))
@@ -124,7 +124,7 @@ class NFATest(unittest.TestCase):
             FARule(1, 'a', 1), FARule(1, 'b', 1), FARule(1, 'b', 2),
             FARule(2, 'a', 3), FARule(2, 'b', 3), FARule(3, 'a', 4),
             FARule(3, 'b', 4)
-        ])  #yapf: disable
+        ])  # yapf: disable
         self.assertFalse(NFA([1], [4], rulebook).accepting)
         self.assertTrue(NFA([1, 2, 4], [4], rulebook).accepting)
 
@@ -142,7 +142,7 @@ class NFATest(unittest.TestCase):
             FARule(1, 'a', 1), FARule(1, 'b', 1), FARule(1, 'b', 2),
             FARule(2, 'a', 3), FARule(2, 'b', 3), FARule(3, 'a', 4),
             FARule(3, 'b', 4)
-        ])  #yapf: disable
+        ])  # yapf: disable
         nfa = NFADesign(1, [4], rulebook)
 
         self.assertTrue(nfa.accepts('bab'))
@@ -152,7 +152,7 @@ class NFATest(unittest.TestCase):
         rulebook = NFARulebook([
             FARule(1, 'a', 1), FARule(1, 'a', 2), FARule(1, None, 2),
             FARule(2, 'b', 3), FARule(3, 'b', 1), FARule(3, None, 2)
-        ])  #yapf: disable
+        ])  # yapf: disable
         self.assertEqual(rulebook.alphabet, set(['a', 'b']))
 
         nfa_design = NFADesign(1, [3], rulebook)
@@ -181,7 +181,7 @@ class NFATest(unittest.TestCase):
             FARule(1, None, 2), FARule(1, None, 4), FARule(2, 'a', 3),
             FARule(3, 'a', 2), FARule(4, 'a', 5), FARule(5, 'a', 6),
             FARule(6, 'a', 4)
-        ])  #yapf: disable
+        ])  # yapf: disable
         self.assertEqual(rulebook.next_states([1], None), set([2, 4]))
         self.assertEqual(rulebook.follow_free_moves([1]), set([1, 2, 4]))
 

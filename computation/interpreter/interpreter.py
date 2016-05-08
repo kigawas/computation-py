@@ -30,7 +30,7 @@ def test():
     seq = Sequence(
         Assign('x', Add(
             Number(1), Number(1))), Assign('y', Multiply(
-                Variable('x'), Number(2))))
+                Variable('x'), Number(2))))  # NOQA
     Machine(seq, {}).run()
 
     print(SEP)
@@ -38,7 +38,7 @@ def test():
     seq = Sequence(
         Assign('x', Add(
             Number(1), Number(1))), Assign('y', Add(
-                Variable('x'), Number(1))))
+                Variable('x'), Number(1))))  # NOQA
     Machine(seq, {}).run()
 
     print(SEP)
@@ -46,7 +46,7 @@ def test():
     seq = While(
         LessThan(
             Variable('x'), Number(50)), Assign('x', Add(
-                Variable('x'), Number(3))))
+                Variable('x'), Number(3))))  # NOQA
     Machine(seq, {'x': Number(1)}).run()
 
     print(SEP)
