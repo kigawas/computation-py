@@ -6,7 +6,8 @@ import unittest
 class Tape(object):
     def __init__(self, left, middle, right, blank):
         assert isinstance(left, list) and isinstance(right, list)
-        self.left, self.middle, self.right, self.blank = left, middle, right, blank
+        self.left, self.middle, self.right, self.blank = (left, middle, right,
+                                                          blank)
 
     def __str__(self):
         return '<Tape: {}({}){}>'.format(''.join(self.left), self.middle,
