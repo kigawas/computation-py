@@ -22,4 +22,4 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 6. Stay tuned..
 
 ## What is your Python's version?
-Python 2.7, I know Python 3 is the future, so I'm just writing codes which are compatible with Python 3.
+Python 2.7, I know Python 3 is the future, so I'm trying writing codes which are compatible with Python 3.
