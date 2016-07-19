@@ -3,8 +3,7 @@ language:
 python:
   - "2.7"
 script:
-  - python -m computation.tests.test_expr
-  - python -m computation.tests.test_stmt
+  - python -m unittest discover computation -v
 branches:
   only:
     - master
