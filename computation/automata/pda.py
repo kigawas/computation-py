@@ -1,7 +1,5 @@
 from __future__ import print_function, unicode_literals
 
-import unittest
-
 from utils import detect
 from state import State
 
@@ -163,8 +161,7 @@ class NPDARulebook(object):
         return "{}".format(self.rules)
 
     def rule_for(self, configuration, character):
-        return [rule
-                for rule in self.rules
+        return [rule for rule in self.rules
                 if rule.applies_to(configuration, character)]
 
     def follow_rules_for(self, configuration, character):
@@ -172,9 +169,8 @@ class NPDARulebook(object):
                 for rule in self.rule_for(configuration, character)]
 
     def next_configurations(self, configurations, character):
-        return set(sum(
-            [self.follow_rules_for(config, character)
-             for config in configurations], []))
+        return set(sum([self.follow_rules_for(config, character)
+                        for config in configurations], []))
 
     def follow_free_moves(self, configurations):
         more_configurations = self.next_configurations(configurations, None)
@@ -211,90 +207,19 @@ class NPDA(object):
         return self.rulebook.follow_free_moves(self._current_configurations)
 
 
-class PDATest(unittest.TestCase):
-    def test_pda_rule(self):
-        rule = PDARule(1, '(', 2, '$', ['b', '$'])
-        configuration = PDAConfiguration(1, Stack(['$']))
-        self.assertTrue(rule.applies_to(configuration, '('))
+class NPDADesign(object):
+    def __init__(self, start_state, bottom_character, accept_states, rulebook):
+        self.start_state = start_state
+        self.bottom_character = bottom_character
+        self.accept_states = accept_states
+        self.rulebook = rulebook
 
-    def test_pda_config(self):
-        config1 = PDAConfiguration(3, Stack(['$']))
-        config2 = PDAConfiguration(3, Stack(['$']))
-        self.assertEqual(config1, config2)
-        self.assertEqual(set([config1, config2]), set([config1]))
+    @property
+    def to_npda(self):
+        start_stack = Stack([self.bottom_character])
+        start_configuration = PDAConfiguration(self.start_state, start_stack)
+        return NPDA(
+            set([start_configuration]), self.accept_states, self.rulebook)
 
-    def test_pda_rulebook(self):
-        configuration = PDAConfiguration(1, Stack(['$']))
-        rulebook = DPDARulebook([
-            PDARule(1, '(', 2, '$', ['b', '$']),
-            PDARule(2, '(', 2, 'b', ['b', 'b']), PDARule(2, ')', 2, 'b', []),
-            PDARule(2, None, 1, '$', ['$'])
-        ])  # yapf: disable
-
-        configuration = rulebook.next_configuration(configuration, '(')
-        self.assertEqual(configuration.stack, Stack(['$', 'b']))
-
-    def test_dpda(self):
-        rulebook = DPDARulebook([
-            PDARule(1, '(', 2, '$', ['b', '$']),
-            PDARule(2, '(', 2, 'b', ['b', 'b']), PDARule(2, ')', 2, 'b', []),
-            PDARule(2, None, 1, '$', ['$'])
-        ])  # yapf: disable
-        dpda = DPDA(PDAConfiguration(1, Stack(['$'])), [1], rulebook)
-        self.assertTrue(dpda.accepting)
-        self.assertFalse(dpda.read_string('(()').accepting)
-        self.assertEqual(dpda.current_configuration.state, 2)
-
-        with self.assertRaises(RuntimeError):
-            DPDARulebook([PDARule(1, None, 1, '$', ['$'])]).follow_free_moves(
-                PDAConfiguration(1, Stack(['$'])))
-
-        dpda = DPDA(PDAConfiguration(1, Stack(['$'])), [1], rulebook)
-        self.assertFalse(dpda.read_string('(()(').accepting)
-        self.assertTrue(dpda.read_string('))()').accepting)
-
-    def test_dpda_design(self):
-        rulebook = DPDARulebook([
-            PDARule(1, '(', 2, '$', ['b', '$']),
-            PDARule(2, '(', 2, 'b', ['b', 'b']), PDARule(2, ')', 2, 'b', []),
-            PDARule(2, None, 1, '$', ['$'])
-        ])  # yapf: disable
-        dpda_design = DPDADesign(1, '$', [1], rulebook)
-        self.assertTrue(dpda_design.accepts('(((((((((())))))))))'))
-        self.assertTrue(dpda_design.accepts('()(())((()))(()(()))'))
-        self.assertFalse(dpda_design.accepts('(()(()(()()(()()))()'))
-        self.assertFalse(dpda_design.accepts('())'))
-
-        dpda = DPDA(PDAConfiguration(1, Stack(['$'])), [1], rulebook)
-        dpda.read_string('())')
-        self.assertFalse(dpda.accepting)
-        self.assertTrue(dpda.is_stuck)
-
-    def test_npda_design(self):
-        rulebook = NPDARulebook([
-            PDARule(1, 'a', 1, '$', ['a', '$']),
-            PDARule(1, 'a', 1, 'a', ['a', 'a']),
-            PDARule(1, 'a', 1, 'b', ['a', 'b']),
-            PDARule(1, 'b', 1, '$', ['b', '$']),
-            PDARule(1, 'b', 1, 'a', ['b', 'a']),
-            PDARule(1, 'b', 1, 'b', ['b', 'b']),
-            PDARule(1, None, 2, '$', ['$']),
-            PDARule(1, None, 2, 'a', ['a']),
-            PDARule(1, None, 2, 'b', ['b']),
-            PDARule(2, 'a', 2, 'a', []),
-            PDARule(2, 'b', 2, 'b', []),
-            PDARule(2, None, 3, '$', ['$'])
-            ])  # yapf: disable
-        configuration = PDAConfiguration(1, Stack(['$']))
-        npda = NPDA([configuration], [3], rulebook)
-        self.assertTrue(npda.accepting)
-        self.assertFalse(npda.read_string('abb').accepting)
-        self.assertTrue(PDAConfiguration(1, Stack([u'$', u'a', u'b', u'b']) in
-                                         npda.current_configurations))
-        self.assertTrue(npda.read_character('a').accepting)
-        self.assertTrue(PDAConfiguration(1, Stack(
-            [u'$', u'a', u'b', u'b', u'a']) in npda.current_configurations))
-
-
-if __name__ == '__main__':
-    unittest.main()
+    def accepts(self, string):
+        return self.to_npda.read_string(string).accepting
