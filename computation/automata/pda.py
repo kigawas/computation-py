@@ -1,7 +1,7 @@
-from __future__ import print_function, unicode_literals
 
-from utils import detect
-from state import State
+
+from .utils import detect
+from .state import State
 
 
 class Stack(object):
@@ -18,6 +18,9 @@ class Stack(object):
     @property
     def top(self):
         return self.contents[-1]
+
+    def __hash__(self):
+        return hash(tuple(self.contents))
 
     def __str__(self):
         return 'Stack({})'.format(self.contents)

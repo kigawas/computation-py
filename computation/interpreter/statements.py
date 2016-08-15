@@ -1,5 +1,5 @@
-from expressions import Boolean
-from utils import merge_dict
+from .expressions import Boolean
+from .utils import merge_dict
 
 
 class DoNothing(object):
