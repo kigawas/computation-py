@@ -77,17 +77,16 @@ class PDATest(unittest.TestCase):
             PDARule(1, None, 2, 'b', ['b']),
             PDARule(2, 'a', 2, 'a', []),
             PDARule(2, 'b', 2, 'b', []),
-            PDARule(2, None, 3, '$', ['$'])
-            ])  # yapf: disable
+            PDARule(2, None, 3, '$', ['$'])])  # yapf: disable
         configuration = PDAConfiguration(1, Stack(['$']))
         npda = NPDA([configuration], [3], rulebook)
         self.assertTrue(npda.accepting)
         self.assertFalse(npda.read_string('abb').accepting)
-        self.assertTrue(PDAConfiguration(1, Stack([u'$', u'a', u'b', u'b']) in
+        self.assertTrue(PDAConfiguration(1, Stack(['$', 'a', 'b', 'b']) in
                                          npda.current_configurations))
         self.assertTrue(npda.read_character('a').accepting)
         self.assertTrue(PDAConfiguration(1, Stack(
-            [u'$', u'a', u'b', u'b', u'a']) in npda.current_configurations))
+            ['$', 'a', 'b', 'b', 'a']) in npda.current_configurations))
         npda_design = NPDADesign(1, '$', [3], rulebook)
         self.assertTrue(npda_design.accepts('abba'))
         self.assertTrue(npda_design.accepts('babbaabbab'))
