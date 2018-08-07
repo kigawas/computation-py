@@ -1,14 +1,12 @@
-
-
 class Tape(object):
     def __init__(self, left, middle, right, blank):
         assert isinstance(left, list) and isinstance(right, list)
-        self.left, self.middle, self.right, self.blank = (left, middle, right,
-                                                          blank)
+        self.left, self.middle, self.right, self.blank = (left, middle, right, blank)
 
     def __str__(self):
-        return '<Tape: {}({}){}>'.format(''.join(self.left), self.middle,
-                                         ''.join(self.right))
+        return "<Tape: {}({}){}>".format(
+            "".join(self.left), self.middle, "".join(self.right)
+        )
 
     def write(self, character):
         return Tape(self.left, character, self.right, self.blank)

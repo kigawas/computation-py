@@ -4,7 +4,7 @@ from .utils import merge_dict
 
 class DoNothing(object):
     def __str__(self):
-        return 'Do nothing'
+        return "Do nothing"
 
     def __eq__(self, other):
         return isinstance(other, DoNothing)
@@ -18,7 +18,7 @@ class DoNothing(object):
 
     @property
     def to_python(self):
-        return 'lambda e: e'
+        return "lambda e: e"
 
 
 class Assign(object):
@@ -27,7 +27,7 @@ class Assign(object):
         self.expression = expression
 
     def __str__(self):
-        return '{} = {}'.format(self.name, self.expression)
+        return "{} = {}".format(self.name, self.expression)
 
     @property
     def reducible(self):
@@ -35,21 +35,21 @@ class Assign(object):
 
     def reduce(self, environment):
         if self.expression.reducible:
-            return Assign(self.name,
-                          self.expression.reduce(environment)), environment
+            return Assign(self.name, self.expression.reduce(environment)), environment
         else:
-            return DoNothing(), merge_dict(environment, {self.name:
-                                                         self.expression})
+            return DoNothing(), merge_dict(environment, {self.name: self.expression})
 
     def evaluate(self, environment):
-        return merge_dict(environment, {self.name:
-                                        self.expression.evaluate(environment)})
+        return merge_dict(
+            environment, {self.name: self.expression.evaluate(environment)}
+        )
 
     @property
     def to_python(self):
-        '''Use dict comprehension to eliminate outer function dependency'''
-        return 'lambda e:{{k: v for d in (e, {{\'{}\': ({})(e)}}) for k, v in d.items()}}'.format(
-            self.name, self.expression.to_python)
+        """Use dict comprehension to eliminate outer function dependency"""
+        return "lambda e:{{k: v for d in (e, {{'{}': ({})(e)}}) for k, v in d.items()}}".format(
+            self.name, self.expression.to_python
+        )
 
 
 class If(object):
@@ -59,8 +59,9 @@ class If(object):
         self.alternative = alternative
 
     def __str__(self):
-        return 'if ({}) {{ {} }} else {{ {} }}'.format(
-            self.condition, self.consequence, self.alternative)
+        return "if ({}) {{ {} }} else {{ {} }}".format(
+            self.condition, self.consequence, self.alternative
+        )
 
     @property
     def reducible(self):
@@ -68,9 +69,14 @@ class If(object):
 
     def reduce(self, environment):
         if self.condition.reducible:
-            return If(
-                self.condition.reduce(environment), self.consequence,
-                self.alternative), environment
+            return (
+                If(
+                    self.condition.reduce(environment),
+                    self.consequence,
+                    self.alternative,
+                ),
+                environment,
+            )
         else:
             if self.condition == Boolean(True):
                 return self.consequence, environment
@@ -85,9 +91,11 @@ class If(object):
 
     @property
     def to_python(self):
-        return 'lambda e: ({1})(e) if ({0})(e) else ({2})(e)'.format(
-            self.condition.to_python, self.consequence.to_python,
-            self.alternative.to_python)
+        return "lambda e: ({1})(e) if ({0})(e) else ({2})(e)".format(
+            self.condition.to_python,
+            self.consequence.to_python,
+            self.alternative.to_python,
+        )
 
 
 class Sequence(object):
@@ -96,7 +104,7 @@ class Sequence(object):
         self.second = second
 
     def __str__(self):
-        return '{}; {}'.format(self.first, self.second)
+        return "{}; {}".format(self.first, self.second)
 
     @property
     def reducible(self):
@@ -114,8 +122,9 @@ class Sequence(object):
 
     @property
     def to_python(self):
-        return 'lambda e: ({1})(({0})(e))'.format(self.first.to_python,
-                                                  self.second.to_python)
+        return "lambda e: ({1})(({0})(e))".format(
+            self.first.to_python, self.second.to_python
+        )
 
 
 class While(object):
@@ -124,18 +133,17 @@ class While(object):
         self.body = body
 
     def __str__(self):
-        return 'while ({}) {{ {} }}'.format(self.condition, self.body)
+        return "while ({}) {{ {} }}".format(self.condition, self.body)
 
     @property
     def reducible(self):
         return True
 
     def reduce(self, environment):
-        return If(self.condition, Sequence(self.body, self),
-                  DoNothing()), environment
+        return If(self.condition, Sequence(self.body, self), DoNothing()), environment
 
     def evaluate(self, environment):
-        '''Optimize tail recursion'''
+        """Optimize tail recursion"""
         while True:
             if self.condition.evaluate(environment) == Boolean(False):
                 return environment
@@ -144,8 +152,7 @@ class While(object):
 
     def evaluate_with_recursion(self, environment):
         if self.condition.evaluate(environment) == Boolean(True):
-            return self.evaluate_with_recursion(self.body.evaluate(
-                environment))
+            return self.evaluate_with_recursion(self.body.evaluate(environment))
         elif self.condition.evaluate(environment) == Boolean(False):
             return environment
 
@@ -156,6 +163,6 @@ class While(object):
         # but notice that Python does no tail recursion optimization
         # it may raise RuntimeError when running too many loops in a while
         # check the limit by `import sys; sys.getrecursionlimit()`
-        return '(lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args))))(lambda wh: lambda e: e if ({condition})(e) is False else wh(({body})(e)))'.format(
-            condition=self.condition.to_python,
-            body=self.body.to_python)
+        return "(lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args))))(lambda wh: lambda e: e if ({condition})(e) is False else wh(({body})(e)))".format(
+            condition=self.condition.to_python, body=self.body.to_python
+        )

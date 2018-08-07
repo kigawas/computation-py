@@ -1,9 +1,12 @@
-language:
-  python
+language: python
 python:
-  - "3.5"
+- 3.7
+dist: xenial
+sudo: true
+install:
+- pip install -U pip
+- pip install codecov
 script:
-  - python -m unittest discover computation -v
-branches:
-  only:
-    - master
+- coverage run -m unittest discover .
+after_success:
+- codecov

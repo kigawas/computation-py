@@ -11,8 +11,7 @@ class DFARulebook(object):
         return self.rule_for(state, character).follow
 
     def rule_for(self, state, character):
-        return detect(self.rules,
-                      lambda rule: rule.applies_to(state, character))
+        return detect(self.rules, lambda rule: rule.applies_to(state, character))
 
 
 class DFA(object):
@@ -26,8 +25,7 @@ class DFA(object):
         return self.current_state in self.accept_states
 
     def read_character(self, character):
-        self.current_state = self.rulebook.next_state(self.current_state,
-                                                      character)
+        self.current_state = self.rulebook.next_state(self.current_state, character)
         return self
 
     def read_string(self, string):

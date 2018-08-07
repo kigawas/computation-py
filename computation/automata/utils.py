@@ -16,5 +16,5 @@ class UtilTest(unittest.TestCase):
         self.assertEqual(detect([1, 2, 3], lambda x: True), 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

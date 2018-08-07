@@ -8,12 +8,12 @@ from .state import State
 class Pattern(object):
     def braket(self, outer_precedence):
         if self.precedence < outer_precedence:
-            return '(' + str(self) + ')'
+            return "(" + str(self) + ")"
         else:
             return str(self)
 
     def __repr__(self):
-        return '/{}/'.format(self)
+        return "/{}/".format(self)
 
     def matches(self, string):
         return self.to_nfa_design.accepts(string)
@@ -21,7 +21,7 @@ class Pattern(object):
 
 class Empty(Pattern):
     def __str__(self):
-        return ''
+        return ""
 
     @property
     def precedence(self):
@@ -60,8 +60,7 @@ class Concatenate(Pattern):
         self.first, self.second = first, second
 
     def __str__(self):
-        return ''.join([p.braket(self.precedence)
-                        for p in [self.first, self.second]])
+        return "".join([p.braket(self.precedence) for p in [self.first, self.second]])
 
     @property
     def precedence(self):
@@ -69,15 +68,23 @@ class Concatenate(Pattern):
 
     @property
     def to_nfa_design(self):
-        first_nfa_design, second_nfa_design = (self.first.to_nfa_design,
-                                               self.second.to_nfa_design)
-        start_state, accept_states = (first_nfa_design.start_state,
-                                      second_nfa_design.accept_states)
+        first_nfa_design, second_nfa_design = (
+            self.first.to_nfa_design,
+            self.second.to_nfa_design,
+        )
+        start_state, accept_states = (
+            first_nfa_design.start_state,
+            second_nfa_design.accept_states,
+        )
 
-        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules  # NOQA
+        rules = (
+            first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
+        )  # NOQA
 
-        extra_rules = [FARule(state, None, second_nfa_design.start_state)
-                       for state in first_nfa_design.accept_states]
+        extra_rules = [
+            FARule(state, None, second_nfa_design.start_state)
+            for state in first_nfa_design.accept_states
+        ]
         rulebook = NFARulebook(rules + extra_rules)
         return NFADesign(start_state, accept_states, rulebook)
 
@@ -87,8 +94,7 @@ class Choose(Pattern):
         self.first, self.second = first, second
 
     def __str__(self):
-        return '|'.join([p.braket(self.precedence)
-                         for p in [self.first, self.second]])
+        return "|".join([p.braket(self.precedence) for p in [self.first, self.second]])
 
     @property
     def precedence(self):
@@ -96,14 +102,22 @@ class Choose(Pattern):
 
     @property
     def to_nfa_design(self):
-        first_nfa_design, second_nfa_design = (self.first.to_nfa_design,
-                                               self.second.to_nfa_design)
+        first_nfa_design, second_nfa_design = (
+            self.first.to_nfa_design,
+            self.second.to_nfa_design,
+        )
         start_state = State()
-        accept_states = first_nfa_design.accept_states + second_nfa_design.accept_states  # NOQA
+        accept_states = (
+            first_nfa_design.accept_states + second_nfa_design.accept_states
+        )  # NOQA
 
-        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules  # NOQA
-        extra_rules = [FARule(start_state, None, nfa_design.start_state)
-                       for nfa_design in [first_nfa_design, second_nfa_design]]
+        rules = (
+            first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
+        )  # NOQA
+        extra_rules = [
+            FARule(start_state, None, nfa_design.start_state)
+            for nfa_design in [first_nfa_design, second_nfa_design]
+        ]
         rulebook = NFARulebook(rules + extra_rules)
         return NFADesign(start_state, accept_states, rulebook)
 
@@ -113,7 +127,7 @@ class Repeat(Pattern):
         self.pattern = pattern
 
     def __str__(self):
-        return self.pattern.braket(self.precedence) + '*'
+        return self.pattern.braket(self.precedence) + "*"
 
     @property
     def precedence(self):
