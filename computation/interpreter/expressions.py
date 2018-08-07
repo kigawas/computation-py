@@ -5,14 +5,14 @@ from functools import total_ordering
 class Number(object):
     def __init__(self, value):
         if not isinstance(value, int):
-            raise TypeError('Not Number')
+            raise TypeError("Not Number")
         self.value = value
 
     def __repr__(self):
-        return 'Number({})'.format(self.value)
+        return "Number({})".format(self.value)
 
     def __str__(self):
-        return '{}'.format(self.value)
+        return "{}".format(self.value)
 
     def __eq__(self, other):
         return self.value == other.value
@@ -29,20 +29,20 @@ class Number(object):
 
     @property
     def to_python(self):
-        return 'lambda e: {}'.format(self.value)
+        return "lambda e: {}".format(self.value)
 
 
 class Boolean(object):
     def __init__(self, value):
         if not isinstance(value, bool):
-            raise TypeError('Not Boolean')
+            raise TypeError("Not Boolean")
         self.value = value
 
     def __repr__(self):
-        return 'Boolean({})'.format(self.value)
+        return "Boolean({})".format(self.value)
 
     def __str__(self):
-        return '{}'.format(self.value)
+        return "{}".format(self.value)
 
     def __eq__(self, other):
         return self.value == other.value
@@ -59,7 +59,7 @@ class Boolean(object):
 
     @property
     def to_python(self):
-        return 'lambda e: {}'.format(self.value)
+        return "lambda e: {}".format(self.value)
 
 
 class Variable(object):
@@ -67,7 +67,7 @@ class Variable(object):
         self.name = name
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return "{}".format(self.name)
 
     @property
     def reducible(self):
@@ -81,7 +81,7 @@ class Variable(object):
 
     @property
     def to_python(self):
-        return 'lambda e: e[\'{}\']'.format(self.name)
+        return "lambda e: e['{}']".format(self.name)
 
 
 class Add(object):
@@ -89,7 +89,7 @@ class Add(object):
         self.left, self.right = left, right
 
     def __str__(self):
-        return '({} + {})'.format(self.left, self.right)
+        return "({} + {})".format(self.left, self.right)
 
     @property
     def reducible(self):
@@ -104,13 +104,16 @@ class Add(object):
             return Number(self.left.value + self.right.value)
 
     def evaluate(self, environment):
-        return Number(self.left.evaluate(environment).value +
-                      self.right.evaluate(environment).value)
+        return Number(
+            self.left.evaluate(environment).value
+            + self.right.evaluate(environment).value
+        )
 
     @property
     def to_python(self):
-        return 'lambda e:({})(e) + ({})(e)'.format(self.left.to_python,
-                                                   self.right.to_python)
+        return "lambda e:({})(e) + ({})(e)".format(
+            self.left.to_python, self.right.to_python
+        )
 
 
 class Multiply(object):
@@ -118,7 +121,7 @@ class Multiply(object):
         self.left, self.right = left, right
 
     def __str__(self):
-        return '({} * {})'.format(self.left, self.right)
+        return "({} * {})".format(self.left, self.right)
 
     @property
     def reducible(self):
@@ -133,13 +136,16 @@ class Multiply(object):
             return Number(self.left.value * self.right.value)
 
     def evaluate(self, environment):
-        return Number(self.left.evaluate(environment).value *
-                      self.right.evaluate(environment).value)
+        return Number(
+            self.left.evaluate(environment).value
+            * self.right.evaluate(environment).value
+        )
 
     @property
     def to_python(self):
-        return 'lambda e:({})(e) * ({})(e)'.format(self.left.to_python,
-                                                   self.right.to_python)
+        return "lambda e:({})(e) * ({})(e)".format(
+            self.left.to_python, self.right.to_python
+        )
 
 
 class LessThan(object):
@@ -147,7 +153,7 @@ class LessThan(object):
         self.left, self.right = left, right
 
     def __str__(self):
-        return '({} < {})'.format(self.left, self.right)
+        return "({} < {})".format(self.left, self.right)
 
     @property
     def reducible(self):
@@ -162,10 +168,13 @@ class LessThan(object):
             return Boolean(self.left.value < self.right.value)
 
     def evaluate(self, environment):
-        return Boolean(self.left.evaluate(environment).value <
-                       self.right.evaluate(environment).value)
+        return Boolean(
+            self.left.evaluate(environment).value
+            < self.right.evaluate(environment).value
+        )
 
     @property
     def to_python(self):
-        return 'lambda e:({})(e) < ({})(e)'.format(self.left.to_python,
-                                                   self.right.to_python)
+        return "lambda e:({})(e) < ({})(e)".format(
+            self.left.to_python, self.right.to_python
+        )

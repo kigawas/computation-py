@@ -15,8 +15,7 @@ class NFARulebook(object):
         return [r.follow for r in self.rules_for(state, character)]
 
     def next_states(self, states, character):
-        return set(sum(
-            [self.follow_rules_for(s, character) for s in states], []))
+        return set(sum([self.follow_rules_for(s, character) for s in states], []))
 
     def follow_free_moves(self, states):
         more_states = self.next_states(states, None)
@@ -27,8 +26,9 @@ class NFARulebook(object):
 
     @property
     def alphabet(self):
-        return set([rule.character
-                    for rule in self.rules if rule.character is not None])
+        return set(
+            [rule.character for rule in self.rules if rule.character is not None]
+        )
 
 
 class NFA(object):
@@ -42,8 +42,7 @@ class NFA(object):
         return not set.isdisjoint(self.current_states, self.accept_states)
 
     def read_character(self, character):
-        self._current_states = self.rulebook.next_states(self.current_states,
-                                                         character)
+        self._current_states = self.rulebook.next_states(self.current_states, character)
         return self
 
     def read_string(self, string):
@@ -78,13 +77,17 @@ class NFASimulation(object):
         self.nfa_design = nfa_design
 
     def next_state(self, state, character):
-        return self.nfa_design.to_nfa_from(set(state)).read_character(
-            character).current_states
+        return (
+            self.nfa_design.to_nfa_from(set(state))
+            .read_character(character)
+            .current_states
+        )
 
     def rules_for(self, state):
-        return [FARule(
-            set(state), character, self.next_state(state, character))
-                for character in self.nfa_design.rulebook.alphabet]  # NOQA
+        return [
+            FARule(set(state), character, self.next_state(state, character))
+            for character in self.nfa_design.rulebook.alphabet
+        ]  # NOQA
 
     def discover_states_and_rules(self, states):
         states = [frozenset(state) for state in states]
@@ -100,7 +103,7 @@ class NFASimulation(object):
     def to_dfa_design(self):
         start_state = self.nfa_design.to_nfa.current_states
         states, rules = self.discover_states_and_rules([start_state])
-        accept_states = [state
-                         for state in states
-                         if self.nfa_design.to_nfa_from(state).accepting]
+        accept_states = [
+            state for state in states if self.nfa_design.to_nfa_from(state).accepting
+        ]
         return DFADesign(start_state, accept_states, DFARulebook(rules))

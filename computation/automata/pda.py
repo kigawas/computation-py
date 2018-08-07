@@ -23,7 +23,7 @@ class Stack(object):
         return hash(tuple(self.contents))
 
     def __str__(self):
-        return 'Stack({})'.format(self.contents)
+        return "Stack({})".format(self.contents)
 
     def __eq__(self, other):
         return self.contents == other.contents
@@ -40,16 +40,16 @@ class PDAConfiguration(object):
         self.stack = stack
 
     def __repr__(self):
-        return 'PDAConfiguration({}, {})'.format(self.state, self.stack)
+        return "PDAConfiguration({}, {})".format(self.state, self.stack)
 
     def __str__(self):
-        return 'State: {}, Stack: {}'.format(self.state, self.stack)
+        return "State: {}, Stack: {}".format(self.state, self.stack)
 
     def __eq__(self, other):
         return self.state == other.state and self.stack == other.stack
 
     def __hash__(self):
-        return hash(self.state) ^ hash(''.join(self.stack.contents))
+        return hash(self.state) ^ hash("".join(self.stack.contents))
 
     @property
     def stuck(self):
@@ -61,16 +61,17 @@ class PDAConfiguration(object):
 
 
 class PDARule(object):
-    def __init__(self, state, character, next_state, pop_character,
-                 push_characters):
+    def __init__(self, state, character, next_state, pop_character, push_characters):
         self.state, self.character = state, character
         self.next_state, self.pop_character = next_state, pop_character
         self.push_characters = push_characters
 
     def applies_to(self, configuration, character):
-        return self.state == configuration.state and \
-            self.pop_character == configuration.stack.top and \
-            self.character == character
+        return (
+            self.state == configuration.state
+            and self.pop_character == configuration.stack.top
+            and self.character == character
+        )
 
     def next_stack(self, configuration):
         popped_stack = configuration.stack.pop
@@ -79,8 +80,7 @@ class PDARule(object):
         return popped_stack
 
     def follow(self, configuration):
-        return PDAConfiguration(self.next_state,
-                                self.next_stack(configuration))
+        return PDAConfiguration(self.next_state, self.next_stack(configuration))
 
 
 class DPDARulebook(object):
@@ -88,8 +88,9 @@ class DPDARulebook(object):
         self.rules = rules
 
     def rule_for(self, configuration, character):
-        return detect(self.rules,
-                      lambda rule: rule.applies_to(configuration, character))
+        return detect(
+            self.rules, lambda rule: rule.applies_to(configuration, character)
+        )
 
     def next_configuration(self, configuration, character):
         return self.rule_for(configuration, character).follow(configuration)
@@ -99,8 +100,7 @@ class DPDARulebook(object):
 
     def follow_free_moves(self, configuration):
         if self.applies_to(configuration, None):
-            return self.follow_free_moves(self.next_configuration(
-                configuration, None))
+            return self.follow_free_moves(self.next_configuration(configuration, None))
         else:
             return configuration
 
@@ -127,8 +127,9 @@ class DPDA(object):
 
     def next_configuration(self, character):
         if self.rulebook.applies_to(self.current_configuration, character):
-            return self.rulebook.next_configuration(self.current_configuration,
-                                                    character)
+            return self.rulebook.next_configuration(
+                self.current_configuration, character
+            )
         else:
             return self.current_configuration.stuck
 
@@ -164,24 +165,30 @@ class NPDARulebook(object):
         return "{}".format(self.rules)
 
     def rule_for(self, configuration, character):
-        return [rule for rule in self.rules
-                if rule.applies_to(configuration, character)]
+        return [
+            rule for rule in self.rules if rule.applies_to(configuration, character)
+        ]
 
     def follow_rules_for(self, configuration, character):
-        return [rule.follow(configuration)
-                for rule in self.rule_for(configuration, character)]
+        return [
+            rule.follow(configuration)
+            for rule in self.rule_for(configuration, character)
+        ]
 
     def next_configurations(self, configurations, character):
-        return set(sum([self.follow_rules_for(config, character)
-                        for config in configurations], []))
+        return set(
+            sum(
+                [self.follow_rules_for(config, character) for config in configurations],
+                [],
+            )
+        )
 
     def follow_free_moves(self, configurations):
         more_configurations = self.next_configurations(configurations, None)
         if more_configurations.issubset(configurations):
             return configurations
         else:
-            return self.follow_free_moves(more_configurations.union(
-                configurations))
+            return self.follow_free_moves(more_configurations.union(configurations))
 
 
 class NPDA(object):
@@ -192,12 +199,17 @@ class NPDA(object):
 
     @property
     def accepting(self):
-        return any([config.state in self.accept_states
-                    for config in self.current_configurations])
+        return any(
+            [
+                config.state in self.accept_states
+                for config in self.current_configurations
+            ]
+        )
 
     def read_character(self, character):
         self._current_configurations = self.rulebook.next_configurations(
-            self.current_configurations, character)
+            self.current_configurations, character
+        )
         return self
 
     def read_string(self, string):
@@ -221,8 +233,7 @@ class NPDADesign(object):
     def to_npda(self):
         start_stack = Stack([self.bottom_character])
         start_configuration = PDAConfiguration(self.start_state, start_stack)
-        return NPDA(
-            set([start_configuration]), self.accept_states, self.rulebook)
+        return NPDA(set([start_configuration]), self.accept_states, self.rulebook)
 
     def accepts(self, string):
         return self.to_npda.read_string(string).accepting
