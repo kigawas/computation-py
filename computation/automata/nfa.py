@@ -1,7 +1,7 @@
 
 
-from .farule import FARule
-from .dfa import DFADesign, DFARulebook
+from computation.automata.farule import FARule
+from computation.automata.dfa import DFADesign, DFARulebook
 
 
 class NFARulebook(object):
@@ -87,7 +87,7 @@ class NFASimulation(object):
         return [
             FARule(set(state), character, self.next_state(state, character))
             for character in self.nfa_design.rulebook.alphabet
-        ]  # NOQA
+        ]
 
     def discover_states_and_rules(self, states):
         states = [frozenset(state) for state in states]

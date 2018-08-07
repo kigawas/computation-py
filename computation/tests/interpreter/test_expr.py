@@ -77,7 +77,3 @@ class CodeGenTest(unittest.TestCase):
         self.assertEqual(eval(a1.to_python)({"x": 7}), 8)
         self.assertEqual(eval(m1.to_python)({"x": 9}), 81)
         self.assertEqual(eval(l1.to_python)({"x": 7, "y": 8}), True)
-
-
-if __name__ == "__main__":
-    unittest.main()

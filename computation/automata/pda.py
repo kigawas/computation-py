@@ -1,7 +1,7 @@
 
 
-from .utils import detect
-from .state import State
+from computation.automata.utils import detect
+from computation.automata.state import State
 
 
 class Stack(object):
@@ -23,7 +23,7 @@ class Stack(object):
         return hash(tuple(self.contents))
 
     def __str__(self):
-        return "Stack({})".format(self.contents)
+        return f"Stack({self.contents})"
 
     def __eq__(self, other):
         return self.contents == other.contents
@@ -40,10 +40,10 @@ class PDAConfiguration(object):
         self.stack = stack
 
     def __repr__(self):
-        return "PDAConfiguration({}, {})".format(self.state, self.stack)
+        return f"PDAConfiguration({self.state}, {self.stack})"
 
     def __str__(self):
-        return "State: {}, Stack: {}".format(self.state, self.stack)
+        return f"State: {self.state}, Stack: {self.stack}"
 
     def __eq__(self, other):
         return self.state == other.state and self.stack == other.stack
@@ -162,7 +162,7 @@ class NPDARulebook(object):
         self.rules = rules
 
     def __str__(self):
-        return "{}".format(self.rules)
+        return f"{self.rules}"
 
     def rule_for(self, configuration, character):
         return [

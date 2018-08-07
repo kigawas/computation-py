@@ -4,9 +4,7 @@ class Tape(object):
         self.left, self.middle, self.right, self.blank = (left, middle, right, blank)
 
     def __str__(self):
-        return "<Tape: {}({}){}>".format(
-            "".join(self.left), self.middle, "".join(self.right)
-        )
+        return f"<Tape: {''.join(self.left)}({self.middle}){''.join(self.right)}>"
 
     def write(self, character):
         return Tape(self.left, character, self.right, self.blank)

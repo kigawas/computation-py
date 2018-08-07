@@ -9,10 +9,10 @@ class Number(object):
         self.value = value
 
     def __repr__(self):
-        return "Number({})".format(self.value)
+        return f"Number({self.value})"
 
     def __str__(self):
-        return "{}".format(self.value)
+        return f"{self.value}"
 
     def __eq__(self, other):
         return self.value == other.value
@@ -29,7 +29,7 @@ class Number(object):
 
     @property
     def to_python(self):
-        return "lambda e: {}".format(self.value)
+        return f"lambda e: {self.value}"
 
 
 class Boolean(object):
@@ -39,10 +39,10 @@ class Boolean(object):
         self.value = value
 
     def __repr__(self):
-        return "Boolean({})".format(self.value)
+        return f"Boolean({self.value})"
 
     def __str__(self):
-        return "{}".format(self.value)
+        return f"{self.value}"
 
     def __eq__(self, other):
         return self.value == other.value
@@ -59,7 +59,7 @@ class Boolean(object):
 
     @property
     def to_python(self):
-        return "lambda e: {}".format(self.value)
+        return f"lambda e: {self.value}"
 
 
 class Variable(object):
@@ -67,7 +67,7 @@ class Variable(object):
         self.name = name
 
     def __str__(self):
-        return "{}".format(self.name)
+        return f"{self.name}"
 
     @property
     def reducible(self):
@@ -81,7 +81,7 @@ class Variable(object):
 
     @property
     def to_python(self):
-        return "lambda e: e['{}']".format(self.name)
+        return f"lambda e: e['{self.name}']"
 
 
 class Add(object):
@@ -89,7 +89,7 @@ class Add(object):
         self.left, self.right = left, right
 
     def __str__(self):
-        return "({} + {})".format(self.left, self.right)
+        return f"({self.left} + {self.right})"
 
     @property
     def reducible(self):
@@ -111,9 +111,7 @@ class Add(object):
 
     @property
     def to_python(self):
-        return "lambda e:({})(e) + ({})(e)".format(
-            self.left.to_python, self.right.to_python
-        )
+        return f"lambda e:({self.left.to_python})(e) + ({self.right.to_python})(e)"
 
 
 class Multiply(object):
@@ -121,7 +119,7 @@ class Multiply(object):
         self.left, self.right = left, right
 
     def __str__(self):
-        return "({} * {})".format(self.left, self.right)
+        return f"({self.left} * {self.right})"
 
     @property
     def reducible(self):
@@ -143,9 +141,7 @@ class Multiply(object):
 
     @property
     def to_python(self):
-        return "lambda e:({})(e) * ({})(e)".format(
-            self.left.to_python, self.right.to_python
-        )
+        return f"lambda e:({self.left.to_python})(e) * ({self.right.to_python})(e)"
 
 
 class LessThan(object):
@@ -153,7 +149,7 @@ class LessThan(object):
         self.left, self.right = left, right
 
     def __str__(self):
-        return "({} < {})".format(self.left, self.right)
+        return f"{self.left} < {self.right}"
 
     @property
     def reducible(self):
@@ -175,6 +171,4 @@ class LessThan(object):
 
     @property
     def to_python(self):
-        return "lambda e:({})(e) < ({})(e)".format(
-            self.left.to_python, self.right.to_python
-        )
+        return f"lambda e:({self.left.to_python})(e) < ({self.right.to_python})(e)"

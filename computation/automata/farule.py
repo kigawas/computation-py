@@ -5,12 +5,10 @@ class FARule(object):
         self.next_state = next_state
 
     def __repr__(self):
-        return "FARule({}, {}, {})".format(self.state, self.character, self.next_state)
+        return f"FARule({self.state}, {self.character}, {self.next_state})"
 
     def __str__(self):
-        return "#<FARule {} --{}--> {}".format(
-            self.state, self.character, self.next_state
-        )
+        return f"#<FARule {self.state} --{self.character}--> {self.next_state}"
 
     def applies_to(self, state, character):
         return self.state == state and self.character == character

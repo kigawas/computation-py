@@ -1,3 +1,3 @@
 class State(object):
     def __repr__(self):
-        return "State<{:}>".format(str(id(self))[-3:])
+        return f"State<{str(id(self))[-3:]}>"
