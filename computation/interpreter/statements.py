@@ -1,5 +1,5 @@
-from .expressions import Boolean
-from .utils import merge_dict
+from computation.interpreter.expressions import Boolean
+from computation.interpreter.utils import merge_dict
 
 
 class DoNothing(object):
@@ -27,7 +27,7 @@ class Assign(object):
         self.expression = expression
 
     def __str__(self):
-        return "{} = {}".format(self.name, self.expression)
+        return f"{self.name} = {self.expression}"
 
     @property
     def reducible(self):
@@ -47,9 +47,7 @@ class Assign(object):
     @property
     def to_python(self):
         """Use dict comprehension to eliminate outer function dependency"""
-        return "lambda e:{{k: v for d in (e, {{'{}': ({})(e)}}) for k, v in d.items()}}".format(
-            self.name, self.expression.to_python
-        )
+        return f"lambda e:{{k: v for d in (e, {{'{self.name}': ({self.expression.to_python})(e)}}) for k, v in d.items()}}"
 
 
 class If(object):
@@ -59,9 +57,7 @@ class If(object):
         self.alternative = alternative
 
     def __str__(self):
-        return "if ({}) {{ {} }} else {{ {} }}".format(
-            self.condition, self.consequence, self.alternative
-        )
+        return f"if ({self.condition}) {{ {self.consequence} }} else {{ {self.alternative} }}"
 
     @property
     def reducible(self):
@@ -91,11 +87,7 @@ class If(object):
 
     @property
     def to_python(self):
-        return "lambda e: ({1})(e) if ({0})(e) else ({2})(e)".format(
-            self.condition.to_python,
-            self.consequence.to_python,
-            self.alternative.to_python,
-        )
+        return f"lambda e: ({self.consequence.to_python})(e) if ({self.condition.to_python})(e) else ({self.alternative.to_python})(e)"
 
 
 class Sequence(object):
@@ -104,7 +96,7 @@ class Sequence(object):
         self.second = second
 
     def __str__(self):
-        return "{}; {}".format(self.first, self.second)
+        return f"{self.first}; {self.second}"
 
     @property
     def reducible(self):
@@ -122,9 +114,7 @@ class Sequence(object):
 
     @property
     def to_python(self):
-        return "lambda e: ({1})(({0})(e))".format(
-            self.first.to_python, self.second.to_python
-        )
+        return f"lambda e: ({self.second.to_python})(({self.first.to_python})(e))"
 
 
 class While(object):
@@ -133,7 +123,7 @@ class While(object):
         self.body = body
 
     def __str__(self):
-        return "while ({}) {{ {} }}".format(self.condition, self.body)
+        return f"while ({self.condition}) {{ {self.body} }}"
 
     @property
     def reducible(self):
@@ -159,10 +149,8 @@ class While(object):
     @property
     def to_python(self):
         # work around using Y-combinator because Python doesn't allow lambda expression including `while`
-        # so I implemented while using recursion
+        # so have to implement while using recursion
         # but notice that Python does no tail recursion optimization
         # it may raise RuntimeError when running too many loops in a while
         # check the limit by `import sys; sys.getrecursionlimit()`
-        return "(lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args))))(lambda wh: lambda e: e if ({condition})(e) is False else wh(({body})(e)))".format(
-            condition=self.condition.to_python, body=self.body.to_python
-        )
+        return f"(lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args))))(lambda wh: lambda e: e if ({self.condition.to_python})(e) is False else wh(({self.body.to_python})(e)))"

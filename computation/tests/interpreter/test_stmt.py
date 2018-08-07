@@ -46,7 +46,7 @@ class StatementTest(unittest.TestCase):
         seq = Sequence(
             Assign("x", Add(Number(1), Number(2))),
             Assign("y", Add(Variable("x"), Number(3))),
-        )  # NOQA
+        )
         self.assertEqual(str(seq), "x = (1 + 2); y = (x + 3)")
         en = {}
         while seq.reducible:
@@ -58,9 +58,9 @@ class StatementTest(unittest.TestCase):
         seq = While(
             LessThan(Variable("x"), Number(5)),
             Assign("x", Multiply(Variable("x"), Number(2))),
-        )  # NOQA
+        )
         en = {"x": Number(1)}
-        self.assertEqual(str(seq), "while ((x < 5)) { x = (x * 2) }")
+        self.assertEqual(str(seq), "while (x < 5) { x = (x * 2) }")
         while seq.reducible:
             seq, en = seq.reduce(en)
         self.assertEqual(en["x"], Number(8))
@@ -71,7 +71,7 @@ class EvalTest(unittest.TestCase):
         st = Sequence(
             Assign("x", Add(Number(1), Number(1))),
             Assign("y", Add(Variable("x"), Number(3))),
-        )  # NOQA
+        )
         en = st.evaluate({})
         self.assertEqual(en["x"], Number(2))
         self.assertEqual(en["y"], Number(5))
@@ -80,7 +80,7 @@ class EvalTest(unittest.TestCase):
         st = If(
             LessThan(Variable("x"), Number(5)),
             Assign("x", Number(2)),
-            Assign("x", Multiply(Variable("x"), Variable("x"))),  # NOQA
+            Assign("x", Multiply(Variable("x"), Variable("x"))),
         )
         en = st.evaluate({"x": Number(2)})
         self.assertEqual(en["x"], Number(2))
@@ -88,7 +88,7 @@ class EvalTest(unittest.TestCase):
         st = If(
             LessThan(Variable("x"), Number(5)),
             Assign("x", Number(2)),
-            Assign("x", Multiply(Variable("x"), Variable("x"))),  # NOQA
+            Assign("x", Multiply(Variable("x"), Variable("x"))),
         )
         en = st.evaluate({"x": Number(10)})
         self.assertEqual(en["x"], Number(100))
@@ -97,7 +97,7 @@ class EvalTest(unittest.TestCase):
         st = While(
             LessThan(Variable("x"), Number(1000)),
             Assign("x", Add(Variable("x"), Number(1))),
-        )  # NOQA
+        )
         en = st.evaluate({"x": Number(1)})
         self.assertEqual(en["x"], Number(1000))
 
@@ -114,7 +114,7 @@ class CodeGenTest(unittest.TestCase):
         st = If(
             LessThan(Variable("x"), Number(5)),
             Assign("x", Number(2)),
-            Assign("x", Multiply(Variable("x"), Variable("x"))),  # NOQA
+            Assign("x", Multiply(Variable("x"), Variable("x"))),
         )
         self.assertEqual(eval(st.to_python)({"x": 1}), {"x": 2})
 
@@ -122,16 +122,12 @@ class CodeGenTest(unittest.TestCase):
         st = Sequence(
             Assign("x", Add(Number(1), Number(1))),
             Assign("y", Add(Variable("x"), Number(3))),
-        )  # NOQA
+        )
         self.assertEqual(eval(st.to_python)({"x": 2, "y": 1}), {"x": 2, "y": 5})
 
     def test_while(self):
         st = While(
             LessThan(Variable("x"), Number(100)),
             Assign("x", Add(Variable("x"), Number(1))),
-        )  # NOQA
+        )
         self.assertEqual(eval(st.to_python)({"x": 1}), {"x": 100})
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -1,6 +1,4 @@
-
-
-from .utils import detect
+from computation.automata.utils import detect
 
 
 class DFARulebook(object):

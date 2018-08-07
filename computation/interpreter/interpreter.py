@@ -6,8 +6,11 @@ class Machine(object):
     def step(self):
         self.expression, self.environment = self.expression.reduce(self.environment)
 
+    def log(self):
+        print(f"{self.expression}, {self.environment}")
+
     def run(self):
+        self.log()
         while self.expression.reducible:
-            print("{}, {}".format(self.expression, self.environment))
             self.step()
-        print("{}, {}".format(self.expression, self.environment))
+            self.log()

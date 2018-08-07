@@ -1,8 +1,8 @@
 
 
-from .farule import FARule
-from .nfa import NFARulebook, NFADesign
-from .state import State
+from computation.automata.farule import FARule
+from computation.automata.nfa import NFARulebook, NFADesign
+from computation.automata.state import State
 
 
 class Pattern(object):
@@ -13,7 +13,7 @@ class Pattern(object):
             return str(self)
 
     def __repr__(self):
-        return "/{}/".format(self)
+        return f"/{self}/"
 
     def matches(self, string):
         return self.to_nfa_design.accepts(string)
@@ -77,9 +77,7 @@ class Concatenate(Pattern):
             second_nfa_design.accept_states,
         )
 
-        rules = (
-            first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
-        )  # NOQA
+        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
 
         extra_rules = [
             FARule(state, None, second_nfa_design.start_state)
@@ -107,13 +105,9 @@ class Choose(Pattern):
             self.second.to_nfa_design,
         )
         start_state = State()
-        accept_states = (
-            first_nfa_design.accept_states + second_nfa_design.accept_states
-        )  # NOQA
+        accept_states = first_nfa_design.accept_states + second_nfa_design.accept_states
 
-        rules = (
-            first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
-        )  # NOQA
+        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
         extra_rules = [
             FARule(start_state, None, nfa_design.start_state)
             for nfa_design in [first_nfa_design, second_nfa_design]
