@@ -1,12 +1,12 @@
-
+from dataclasses import dataclass
 
 from computation.automata.farule import FARule
 from computation.automata.dfa import DFADesign, DFARulebook
 
 
-class NFARulebook(object):
-    def __init__(self, rules):
-        self.rules = rules
+@dataclass
+class NFARulebook:
+    rules: list
 
     def rules_for(self, state, character):
         return [r for r in self.rules if r.applies_to(state, character)]
@@ -31,7 +31,7 @@ class NFARulebook(object):
         )
 
 
-class NFA(object):
+class NFA:
     def __init__(self, current_states, accept_states, rulebook):
         self._current_states = set(current_states)
         self.accept_states = set(accept_states)
@@ -55,11 +55,11 @@ class NFA(object):
         return self.rulebook.follow_free_moves(self._current_states)
 
 
-class NFADesign(object):
-    def __init__(self, start_state, accept_states, rulebook):
-        self.start_state = start_state
-        self.accept_states = accept_states
-        self.rulebook = rulebook
+@dataclass
+class NFADesign:
+    start_state: int
+    accept_states: list
+    rulebook: NFARulebook
 
     @property
     def to_nfa(self):
@@ -72,9 +72,9 @@ class NFADesign(object):
         return self.to_nfa.read_string(string).accepting
 
 
-class NFASimulation(object):
-    def __init__(self, nfa_design):
-        self.nfa_design = nfa_design
+@dataclass
+class NFASimulation:
+    nfa_design: NFADesign
 
     def next_state(self, state, character):
         return (

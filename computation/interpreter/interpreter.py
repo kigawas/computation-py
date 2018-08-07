@@ -1,4 +1,4 @@
-class Machine(object):
+class Machine:
     def __init__(self, expression, environment):
         self.expression = expression
         self.environment = environment

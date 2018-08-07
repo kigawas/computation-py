@@ -1,10 +1,8 @@
-
-
 from computation.automata.utils import detect
 from computation.automata.state import State
 
 
-class Stack(object):
+class Stack:
     def __init__(self, contents):
         self.contents = contents
 
@@ -32,7 +30,7 @@ class Stack(object):
         return self.contents != other.contents
 
 
-class PDAConfiguration(object):
+class PDAConfiguration:
     STUCK_STATE = State()
 
     def __init__(self, state, stack):
@@ -60,7 +58,7 @@ class PDAConfiguration(object):
         return self.state == PDAConfiguration.STUCK_STATE
 
 
-class PDARule(object):
+class PDARule:
     def __init__(self, state, character, next_state, pop_character, push_characters):
         self.state, self.character = state, character
         self.next_state, self.pop_character = next_state, pop_character
@@ -83,7 +81,7 @@ class PDARule(object):
         return PDAConfiguration(self.next_state, self.next_stack(configuration))
 
 
-class DPDARulebook(object):
+class DPDARulebook:
     def __init__(self, rules):
         self.rules = rules
 
@@ -105,7 +103,7 @@ class DPDARulebook(object):
             return configuration
 
 
-class DPDA(object):
+class DPDA:
     def __init__(self, current_configuration, accept_states, rulebook):
         self._current_configuration = current_configuration
         self.accept_states = accept_states
@@ -142,7 +140,7 @@ class DPDA(object):
         return self.rulebook.follow_free_moves(self._current_configuration)
 
 
-class DPDADesign(object):
+class DPDADesign:
     def __init__(self, start_state, bottom_character, accept_states, rulebook):
         self.start_state, self.bottom_character = start_state, bottom_character
         self.accept_states, self.rulebook = accept_states, rulebook
@@ -157,7 +155,7 @@ class DPDADesign(object):
         return self.to_dpda.read_string(string).accepting
 
 
-class NPDARulebook(object):
+class NPDARulebook:
     def __init__(self, rules):
         self.rules = rules
 
@@ -191,7 +189,7 @@ class NPDARulebook(object):
             return self.follow_free_moves(more_configurations.union(configurations))
 
 
-class NPDA(object):
+class NPDA:
     def __init__(self, current_configurations, accept_states, rulebook):
         self._current_configurations = set(current_configurations)
         self.accept_states = set(accept_states)
@@ -222,7 +220,7 @@ class NPDA(object):
         return self.rulebook.follow_free_moves(self._current_configurations)
 
 
-class NPDADesign(object):
+class NPDADesign:
     def __init__(self, start_state, bottom_character, accept_states, rulebook):
         self.start_state = start_state
         self.bottom_character = bottom_character
