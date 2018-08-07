@@ -2,7 +2,7 @@ from functools import total_ordering
 
 
 @total_ordering
-class Number(object):
+class Number:
     def __init__(self, value):
         if not isinstance(value, int):
             raise TypeError("Not Number")
@@ -32,7 +32,7 @@ class Number(object):
         return f"lambda e: {self.value}"
 
 
-class Boolean(object):
+class Boolean:
     def __init__(self, value):
         if not isinstance(value, bool):
             raise TypeError("Not Boolean")
@@ -62,7 +62,7 @@ class Boolean(object):
         return f"lambda e: {self.value}"
 
 
-class Variable(object):
+class Variable:
     def __init__(self, name):
         self.name = name
 
@@ -84,7 +84,7 @@ class Variable(object):
         return f"lambda e: e['{self.name}']"
 
 
-class Add(object):
+class Add:
     def __init__(self, left, right):
         self.left, self.right = left, right
 
@@ -114,7 +114,7 @@ class Add(object):
         return f"lambda e:({self.left.to_python})(e) + ({self.right.to_python})(e)"
 
 
-class Multiply(object):
+class Multiply:
     def __init__(self, left, right):
         self.left, self.right = left, right
 
@@ -144,7 +144,7 @@ class Multiply(object):
         return f"lambda e:({self.left.to_python})(e) * ({self.right.to_python})(e)"
 
 
-class LessThan(object):
+class LessThan:
     def __init__(self, left, right):
         self.left, self.right = left, right
 

@@ -1,9 +1,11 @@
+from dataclasses import dataclass
+
 from computation.automata.utils import detect
 
 
-class DFARulebook(object):
-    def __init__(self, rules):
-        self.rules = rules
+@dataclass
+class DFARulebook:
+    rules: list
 
     def next_state(self, state, character):
         return self.rule_for(state, character).follow
@@ -12,11 +14,11 @@ class DFARulebook(object):
         return detect(self.rules, lambda rule: rule.applies_to(state, character))
 
 
-class DFA(object):
-    def __init__(self, current_state, accept_states, rulebook):
-        self.current_state = current_state
-        self.accept_states = accept_states
-        self.rulebook = rulebook
+@dataclass
+class DFA:
+    current_state: int
+    accept_states: list
+    rulebook: DFARulebook
 
     @property
     def accepting(self):
@@ -32,11 +34,12 @@ class DFA(object):
         return self
 
 
-class DFADesign(object):
-    def __init__(self, start_state, accept_states, rulebook):
-        self.start_state = start_state
-        self.accept_states = accept_states
-        self.rulebook = rulebook
+@dataclass
+class DFADesign:
+
+    start_state: int
+    accept_states: list
+    rulebook: DFARulebook
 
     @property
     def to_dfa(self):

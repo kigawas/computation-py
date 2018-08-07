@@ -1,18 +1,24 @@
-class FARule(object):
-    def __init__(self, state, character, next_state):
-        self.state = state
-        self.character = character
-        self.next_state = next_state
+from dataclasses import dataclass
 
-    def __repr__(self):
+
+@dataclass
+class FARule:
+    state: int
+    character: str
+    next_state: int
+
+    def __repr__(self) -> str:
         return f"FARule({self.state}, {self.character}, {self.next_state})"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"#<FARule {self.state} --{self.character}--> {self.next_state}"
 
-    def applies_to(self, state, character):
+    def applies_to(self, state, character) -> bool:
         return self.state == state and self.character == character
 
     @property
     def follow(self):
         return self.next_state
+
+    def reverse(self):
+        return FARule(self.next_state, self.character, self.state)

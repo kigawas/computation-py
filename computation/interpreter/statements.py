@@ -2,7 +2,7 @@ from computation.interpreter.expressions import Boolean
 from computation.interpreter.utils import merge_dict
 
 
-class DoNothing(object):
+class DoNothing:
     def __str__(self):
         return "Do nothing"
 
@@ -21,7 +21,7 @@ class DoNothing(object):
         return "lambda e: e"
 
 
-class Assign(object):
+class Assign:
     def __init__(self, name, expression):
         self.name = name
         self.expression = expression
@@ -50,7 +50,7 @@ class Assign(object):
         return f"lambda e:{{k: v for d in (e, {{'{self.name}': ({self.expression.to_python})(e)}}) for k, v in d.items()}}"
 
 
-class If(object):
+class If:
     def __init__(self, condition, consequence, alternative):
         self.condition = condition
         self.consequence = consequence
@@ -90,7 +90,7 @@ class If(object):
         return f"lambda e: ({self.consequence.to_python})(e) if ({self.condition.to_python})(e) else ({self.alternative.to_python})(e)"
 
 
-class Sequence(object):
+class Sequence:
     def __init__(self, first, second):
         self.first = first
         self.second = second
@@ -117,7 +117,7 @@ class Sequence(object):
         return f"lambda e: ({self.second.to_python})(({self.first.to_python})(e))"
 
 
-class While(object):
+class While:
     def __init__(self, condition, body):
         self.condition = condition
         self.body = body

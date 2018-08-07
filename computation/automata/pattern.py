@@ -5,7 +5,7 @@ from computation.automata.nfa import NFARulebook, NFADesign
 from computation.automata.state import State
 
 
-class Pattern(object):
+class Pattern:
     def braket(self, outer_precedence):
         if self.precedence < outer_precedence:
             return "(" + str(self) + ")"
