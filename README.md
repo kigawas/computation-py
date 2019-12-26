@@ -14,7 +14,7 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 
 1.  Two kinds of interpreters for a simple language.
 
-2.  Generating Python code for this language instead of Ruby (Because Python's anonymous functions are quite more limited than Ruby, there are some hacks.)
+2.  Generating Python code for this language instead of Ruby (Because Python's anonymous functions are quite more limited than Ruby, there are some hacks like Y-combinator.)
 
 3.  Simulating automata such as DFA, NFA, PDA.
 
@@ -26,4 +26,4 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 
 ## What is your Python's version?
 
-Python 3, because it's the future.
+Python 3.
