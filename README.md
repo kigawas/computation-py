@@ -8,22 +8,22 @@ Python implementation for [Understanding Computation](http://computationbook.com
 
 I don't want to evangelize, but if you are curious about how a program functions, you must read this book. It's just like SICP's ruby version in a way, yet with much more fun.
 
-## What does this repository cover?
+## What does this repository cover
 
 I just implemented equivalent codes from chapter to chapter, those contents are:
 
-1.  Two kinds of interpreters for a simple language.
+1. Two kinds of interpreters for a simple language
 
-2.  Generating Python code for this language instead of Ruby (Because Python's anonymous functions are quite more limited than Ruby, there are some hacks like Y-combinator.)
+2. Generating Python code for this language instead of Ruby (Because Python's anonymous functions are quite more limited than Ruby, there are some hacks like Y-combinator)
 
-3.  Simulating automata such as DFA, NFA, PDA.
+3. Simulating automata such as DFA, NFA, PDA.
 
-4.  Using automata to build a simple regular expression engine.
+4. Using automata to build a simple regular expression engine.
 
-5.  Simulating a Turing machine.
+5. Simulating a Turing machine.
 
-6.  Stay tuned..
+6. Stay tuned..
 
-## What is your Python's version?
+## What is your Python's version
 
 Python 3.
