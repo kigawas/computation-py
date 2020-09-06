@@ -1,3 +1,8 @@
+from dataclasses import dataclass
+
+
+@dataclass(eq=False, frozen=True)
 class State:
-    def __repr__(self):
-        return f"State<{str(id(self))[-3:]}>"
+    """
+    Every state is unique
+    """
