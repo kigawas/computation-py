@@ -1,27 +1,17 @@
+from typing import List
 from dataclasses import dataclass
 
-from computation.automata.utils import detect
-
-
-@dataclass
-class DFARulebook:
-    rules: list
-
-    def next_state(self, state, character):
-        return self.rule_for(state, character).follow
-
-    def rule_for(self, state, character):
-        return detect(self.rules, lambda rule: rule.applies_to(state, character))
+from .farule import DFARulebook
 
 
 @dataclass
 class DFA:
     current_state: int
-    accept_states: list
+    accept_states: List[int]
     rulebook: DFARulebook
 
     @property
-    def accepting(self):
+    def accepting(self) -> bool:
         return self.current_state in self.accept_states
 
     def read_character(self, character):
@@ -36,9 +26,8 @@ class DFA:
 
 @dataclass
 class DFADesign:
-
     start_state: int
-    accept_states: list
+    accept_states: List[int]
     rulebook: DFARulebook
 
     @property
