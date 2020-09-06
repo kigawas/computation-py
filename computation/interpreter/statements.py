@@ -1,19 +1,19 @@
-from computation.interpreter.expressions import Boolean
-from computation.interpreter.utils import merge_dict
+from dataclasses import dataclass
+
+from .expressions import Boolean, Expression
+from .utils import merge_dict
 
 
+@dataclass
 class DoNothing:
     def __str__(self):
         return "Do nothing"
-
-    def __eq__(self, other):
-        return isinstance(other, DoNothing)
 
     @property
     def reducible(self):
         return False
 
-    def evaluate(environment):
+    def evaluate(self, environment):
         return environment
 
     @property
@@ -21,10 +21,10 @@ class DoNothing:
         return "lambda e: e"
 
 
-class Assign:
-    def __init__(self, name, expression):
-        self.name = name
-        self.expression = expression
+@dataclass
+class Assign(Expression):
+    name: str
+    expression: Expression
 
     def __str__(self):
         return f"{self.name} = {self.expression}"
@@ -47,14 +47,14 @@ class Assign:
     @property
     def to_python(self):
         """Use dict comprehension to eliminate outer function dependency"""
-        return f"lambda e:{{k: v for d in (e, {{'{self.name}': ({self.expression.to_python})(e)}}) for k, v in d.items()}}"
+        return f'lambda e:{{k: v for d in (e, {{"{self.name}": ({self.expression.to_python})(e)}}) for k, v in d.items()}}'
 
 
-class If:
-    def __init__(self, condition, consequence, alternative):
-        self.condition = condition
-        self.consequence = consequence
-        self.alternative = alternative
+@dataclass
+class If(Expression):
+    condition: Expression
+    consequence: Expression
+    alternative: Expression
 
     def __str__(self):
         return f"if ({self.condition}) {{ {self.consequence} }} else {{ {self.alternative} }}"
@@ -90,10 +90,10 @@ class If:
         return f"lambda e: ({self.consequence.to_python})(e) if ({self.condition.to_python})(e) else ({self.alternative.to_python})(e)"
 
 
-class Sequence:
-    def __init__(self, first, second):
-        self.first = first
-        self.second = second
+@dataclass
+class Sequence(Expression):
+    first: Expression
+    second: Expression
 
     def __str__(self):
         return f"{self.first}; {self.second}"
@@ -117,10 +117,10 @@ class Sequence:
         return f"lambda e: ({self.second.to_python})(({self.first.to_python})(e))"
 
 
-class While:
-    def __init__(self, condition, body):
-        self.condition = condition
-        self.body = body
+@dataclass
+class While(Expression):
+    condition: Expression
+    body: Expression
 
     def __str__(self):
         return f"while ({self.condition}) {{ {self.body} }}"

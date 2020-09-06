@@ -1,24 +1,28 @@
-from functools import total_ordering
+from dataclasses import dataclass
 
 
-@total_ordering
-class Number:
-    def __init__(self, value):
-        if not isinstance(value, int):
-            raise TypeError("Not Number")
-        self.value = value
+class Expression:
+    @property
+    def reducible(self):
+        raise NotImplementedError
 
-    def __repr__(self):
-        return f"Number({self.value})"
+    @property
+    def to_python(self):
+        raise NotImplementedError
+
+    def evaluate(self, environment):
+        raise NotImplementedError
+
+    def reduce(self):
+        raise NotImplementedError
+
+
+@dataclass(order=True)
+class Number(Expression):
+    value: int
 
     def __str__(self):
         return f"{self.value}"
-
-    def __eq__(self, other):
-        return self.value == other.value
-
-    def __lt__(self, other):
-        return self.value < other.value
 
     @property
     def reducible(self):
@@ -32,23 +36,12 @@ class Number:
         return f"lambda e: {self.value}"
 
 
-class Boolean:
-    def __init__(self, value):
-        if not isinstance(value, bool):
-            raise TypeError("Not Boolean")
-        self.value = value
-
-    def __repr__(self):
-        return f"Boolean({self.value})"
+@dataclass
+class Boolean(Expression):
+    value: bool
 
     def __str__(self):
         return f"{self.value}"
-
-    def __eq__(self, other):
-        return self.value == other.value
-
-    def __ne__(self, other):
-        return self.value != other.value
 
     @property
     def reducible(self):
@@ -62,9 +55,9 @@ class Boolean:
         return f"lambda e: {self.value}"
 
 
-class Variable:
-    def __init__(self, name):
-        self.name = name
+@dataclass
+class Variable(Expression):
+    name: str
 
     def __str__(self):
         return f"{self.name}"
@@ -84,9 +77,10 @@ class Variable:
         return f"lambda e: e['{self.name}']"
 
 
-class Add:
-    def __init__(self, left, right):
-        self.left, self.right = left, right
+@dataclass
+class Add(Expression):
+    left: Number
+    right: Number
 
     def __str__(self):
         return f"({self.left} + {self.right})"
@@ -114,9 +108,10 @@ class Add:
         return f"lambda e:({self.left.to_python})(e) + ({self.right.to_python})(e)"
 
 
-class Multiply:
-    def __init__(self, left, right):
-        self.left, self.right = left, right
+@dataclass
+class Multiply(Expression):
+    left: Number
+    right: Number
 
     def __str__(self):
         return f"({self.left} * {self.right})"
@@ -144,9 +139,10 @@ class Multiply:
         return f"lambda e:({self.left.to_python})(e) * ({self.right.to_python})(e)"
 
 
-class LessThan:
-    def __init__(self, left, right):
-        self.left, self.right = left, right
+@dataclass
+class LessThan(Expression):
+    left: Number
+    right: Number
 
     def __str__(self):
         return f"{self.left} < {self.right}"
