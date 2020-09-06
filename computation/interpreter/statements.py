@@ -7,7 +7,7 @@ from .utils import merge_dict
 @dataclass
 class DoNothing:
     def __str__(self):
-        return "Do nothing"
+        return "do-nothing"
 
     @property
     def reducible(self):
@@ -47,7 +47,7 @@ class Assign(Expression):
     @property
     def to_python(self):
         """Use dict comprehension to eliminate outer function dependency"""
-        return f'lambda e:{{k: v for d in (e, {{"{self.name}": ({self.expression.to_python})(e)}}) for k, v in d.items()}}'
+        return f'lambda e: {{k: v for d in (e, {{"{self.name}": ({self.expression.to_python})(e)}}) for k, v in d.items()}}'
 
 
 @dataclass

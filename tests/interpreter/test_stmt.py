@@ -14,7 +14,7 @@ from computation.interpreter.expressions import (
 class StatementTest(unittest.TestCase):
     def test_donothing(self):
         self.assertEqual(DoNothing(), DoNothing())
-        self.assertEqual(str(DoNothing()), "Do nothing")
+        self.assertEqual(str(DoNothing()), "do-nothing")
         self.assertNotEqual(DoNothing(), 1)
 
     def test_assign(self):
