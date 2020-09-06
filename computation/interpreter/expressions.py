@@ -8,12 +8,21 @@ class Expression:
 
     @property
     def to_python(self):
+        """
+        Python lambda generator
+        """
         raise NotImplementedError
 
     def evaluate(self, environment):
+        """
+        Evaluate everything in "recursive descent"
+        """
         raise NotImplementedError
 
     def reduce(self):
+        """
+        Reduce step by step
+        """
         raise NotImplementedError
 
 
