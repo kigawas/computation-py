@@ -9,7 +9,7 @@ class Expression:
     @property
     def to_python(self):
         """
-        Python lambda generator
+        Python lambda code generator
         """
         raise NotImplementedError
 
