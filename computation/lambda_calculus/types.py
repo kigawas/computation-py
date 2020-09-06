@@ -1,3 +1,4 @@
+# numbers
 ZERO = lambda f: lambda x: x
 ONE = lambda f: lambda x: f(x)
 TWO = lambda f: lambda x: f(f(x))
@@ -5,18 +6,19 @@ THREE = lambda f: lambda x: f(f(f(x)))
 FIVE = lambda f: lambda x: f(f(f(f(f(x)))))
 
 
-def to_integer(l):
-    return l(lambda n: n + 1)(0)
+def to_integer(lb):
+    return lb(lambda n: n + 1)(0)
 
 
+# conditions
 TRUE = lambda x: lambda y: x
 FALSE = lambda x: lambda y: y
 IF = lambda b: b
 IS_ZERO = lambda n: n(lambda x: FALSE)(TRUE)
 
 
-def to_boolean(l):
-    return IF(l)(True)(False)
+def to_boolean(lb):
+    return IF(lb)(True)(False)
 
 
 PAIR = lambda x: lambda y: lambda f: f(x)(y)
