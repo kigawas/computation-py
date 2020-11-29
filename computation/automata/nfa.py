@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import Optional, Iterable, List, Tuple
 
 from .farule import FARule, DFARulebook, NFARulebook
 from .dfa import DFADesign
@@ -6,24 +9,26 @@ from .dfa import DFADesign
 
 @dataclass
 class NFA:
-    def __init__(self, current_states, accept_states, rulebook):
-        self._current_states = frozenset(current_states)
+    def __init__(
+        self,
+        current_states: Iterable[int],
+        accept_states: Iterable[int],
+        rulebook: NFARulebook,
+    ):
+        self.current_states = rulebook.follow_free_moves(frozenset(current_states))
         self.accept_states = frozenset(accept_states)
         self.rulebook = rulebook
-
-    @property
-    def current_states(self):
-        return self.rulebook.follow_free_moves(self._current_states)
 
     @property
     def accepting(self):
         return not frozenset.isdisjoint(self.current_states, self.accept_states)
 
-    def read_character(self, character):
-        self._current_states = self.rulebook.next_states(self.current_states, character)
+    def read_character(self, character: Optional[str]) -> NFA:
+        next_states = self.rulebook.next_states(self.current_states, character)
+        self.current_states = self.rulebook.follow_free_moves(next_states)
         return self
 
-    def read_string(self, string):
+    def read_string(self, string: str) -> NFA:
         for c in string:
             self.read_character(c)
         return self
@@ -36,13 +41,13 @@ class NFADesign:
     rulebook: NFARulebook
 
     @property
-    def to_nfa(self):
+    def to_nfa(self) -> NFA:
         return NFA([self.start_state], self.accept_states, self.rulebook)
 
-    def to_nfa_from(self, current_states):
+    def to_nfa_from(self, current_states: Iterable[int]) -> NFA:
         return NFA(current_states, self.accept_states, self.rulebook)
 
-    def accepts(self, string):
+    def accepts(self, string: str):
         return self.to_nfa.read_string(string).accepting
 
 
@@ -50,23 +55,26 @@ class NFADesign:
 class NFASimulation:
     nfa_design: NFADesign
 
-    def next_state(self, state, character):
+    def next_state(self, state: Iterable[int], character: Optional[str]):
         return (
             self.nfa_design.to_nfa_from(set(state))
             .read_character(character)
             .current_states
         )
 
-    def rules_for(self, state):
+    def rules_for(self, state: Iterable[int]) -> List[FARule]:
+        alphabet = self.nfa_design.rulebook.alphabet
         return [
-            FARule(set(state), character, self.next_state(state, character))
-            for character in self.nfa_design.rulebook.alphabet
+            FARule(frozenset(state), character, self.next_state(state, character))
+            for character in alphabet
         ]
 
-    def discover_states_and_rules(self, states):
-        states = [frozenset(state) for state in states]
-        rules = sum([self.rules_for(state) for state in states], [])
-        more_states = frozenset([frozenset(rule.follow) for rule in rules])
+    def discover_states_and_rules(
+        self, states: frozenset
+    ) -> Tuple[Iterable[Iterable[int]], List[FARule]]:
+        rules_list = [self.rules_for(state) for state in states]
+        rules: List[FARule] = sum(rules_list, [])
+        more_states = frozenset([rule.follow for rule in rules])
 
         if more_states.issubset(states):
             return states, rules
@@ -76,7 +84,7 @@ class NFASimulation:
     @property
     def to_dfa_design(self):
         start_state = self.nfa_design.to_nfa.current_states
-        states, rules = self.discover_states_and_rules([start_state])
+        states, rules = self.discover_states_and_rules(frozenset([start_state]))
         accept_states = [
             state for state in states if self.nfa_design.to_nfa_from(state).accepting
         ]
