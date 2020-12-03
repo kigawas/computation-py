@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, FrozenSet, Iterable, Optional
+from typing import List, FrozenSet, Iterable, Optional, Union
 
 from .utils import detect
 
 
 @dataclass(frozen=True)
 class FARule:
-    state: int
+    state: Union[int, FrozenSet[int]]
     character: Optional[str]
-    next_state: int
+    next_state: Union[int, FrozenSet[int]]
 
     @property
-    def follow(self) -> int:
+    def follow(self) -> Union[int, FrozenSet[int]]:
         return self.next_state
 
     def applies_to(self, state: int, character: Optional[str]) -> bool:
@@ -55,7 +55,8 @@ class NFARulebook:
     def next_states(
         self, states: Iterable[int], character: Optional[str]
     ) -> FrozenSet[int]:
-        return frozenset(sum([self.follow_rules_for(s, character) for s in states], []))
+        next_states = [self.follow_rules_for(s, character) for s in states]
+        return frozenset(sum(next_states, []))
 
     def follow_free_moves(self, states: Iterable[int]) -> Iterable[int]:
         more_states = self.next_states(states, None)

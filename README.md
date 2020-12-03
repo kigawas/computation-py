@@ -14,13 +14,13 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 
 1. Two kinds of interpreters for a simple language
 
-2. Generating Python code for this language instead of Ruby (Because Python's anonymous functions are quite more limited than Ruby, there are some hacks like Y-combinator)
+2. Generating Python code for this language instead of Ruby (Because Python's anonymous functions are quite more limited than Ruby, there are some hacks like [Y-combinator](https://kigawas.me/posts/y-combinator-in-python/))
 
-3. Simulating automata such as DFA, NFA, PDA.
+3. Simulating automata such as DFA, NFA, PDA
 
-4. Using automata to build a simple regular expression engine.
+4. Using automata to build a simple regular expression engine
 
-5. Simulating a Turing machine.
+5. Simulating a Turing machine
 
 6. Stay tuned..
 
