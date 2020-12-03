@@ -1,4 +1,4 @@
-# numbers
+# Church numbers
 ZERO = lambda f: lambda x: x
 ONE = lambda f: lambda x: f(x)
 TWO = lambda f: lambda x: f(f(x))
