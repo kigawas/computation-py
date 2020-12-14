@@ -8,7 +8,8 @@ from computation.interpreter.expressions import (
     Multiply,
     LessThan,
 )
-from computation.interpreter.statements import Sequence, Assign, While
+from computation.interpreter.statements import DoNothing, Sequence, Assign, While
+from computation.interpreter.parser import parse
 
 
 class InterpreterTest(unittest.TestCase):
@@ -42,3 +43,18 @@ class InterpreterTest(unittest.TestCase):
         Machine(seq, {"x": Number(1)}).run()
 
         self.assertEqual(eval(seq.to_python)({"x": 1}), {"x": 52})
+
+        source = """
+            a = 0
+            b = 0
+            while (a < 5) {
+                a = a + 1
+                b = b + a + 1
+            }
+        """
+        seq = parse(source)
+        Machine(seq).run()
+        self.assertEqual(eval(seq.to_python)({}), {"a": 5, "b": 20})
+
+        seq = parse(" ")
+        assert seq == DoNothing()

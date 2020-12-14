@@ -70,8 +70,8 @@ class Multiply(BinaryExpression):
 
 @dataclass
 class LessThan(BinaryExpression):
-    left: Number
-    right: Number
+    left: Expression
+    right: Expression
 
     def __str__(self):
         op = self.op_str()
