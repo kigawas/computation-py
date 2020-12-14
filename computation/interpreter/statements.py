@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 
 from .expressions import Boolean, Expression
-from .utils import merge_dict
 
 
 @dataclass
-class DoNothing:
+class DoNothing(Expression):
     def __str__(self):
         return "do-nothing"
 
@@ -37,12 +36,10 @@ class Assign(Expression):
         if self.expression.reducible:
             return Assign(self.name, self.expression.reduce(environment)), environment
         else:
-            return DoNothing(), merge_dict(environment, {self.name: self.expression})
+            return DoNothing(), environment | {self.name: self.expression}
 
     def evaluate(self, environment):
-        return merge_dict(
-            environment, {self.name: self.expression.evaluate(environment)}
-        )
+        return environment | {self.name: self.expression.evaluate(environment)}
 
     @property
     def to_python(self):
