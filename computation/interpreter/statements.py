@@ -76,11 +76,15 @@ class If(Expression):
             elif self.condition == Boolean(False):
                 return self.alternative, environment
 
+            raise ValueError("Invalid condition")
+
     def evaluate(self, environment):
         if self.condition.evaluate(environment) == Boolean(True):
             return self.consequence.evaluate(environment)
         elif self.condition.evaluate(environment) == Boolean(False):
             return self.alternative.evaluate(environment)
+
+        raise ValueError("Invalid condition")
 
     @property
     def to_python(self):

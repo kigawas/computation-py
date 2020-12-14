@@ -18,3 +18,4 @@ class Machine:
         while self.expression.reducible:
             self.step()
             self.log()
+        return self

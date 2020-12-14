@@ -25,4 +25,4 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       - run: poetry install
       - name: Run test
-        run: poetry run python -m unittest discover .
+        run: poetry run pytest -s

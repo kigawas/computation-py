@@ -13,13 +13,13 @@ class Expression:
         """
         raise NotImplementedError
 
-    def evaluate(self, _environment):
+    def evaluate(self, _environment: dict):
         """
         Evaluate everything in "recursive descent"
         """
         raise NotImplementedError
 
-    def reduce(self, _environment):
+    def reduce(self, _environment: dict):
         """
         Reduce step by step
         """
