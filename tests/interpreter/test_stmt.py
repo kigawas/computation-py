@@ -19,7 +19,7 @@ class StatementTest(unittest.TestCase):
 
     def test_assign(self):
         st = Assign("x", Add(Variable("x"), Number(1)))
-        self.assertEqual(str(st), "x = (x + 1)")
+        self.assertEqual(str(st), "x = x + 1")
         en = {"x": Number(2)}
         while st.reducible:
             st, en = st.reduce(en)
@@ -47,7 +47,7 @@ class StatementTest(unittest.TestCase):
             Assign("x", Add(Number(1), Number(2))),
             Assign("y", Add(Variable("x"), Number(3))),
         )
-        self.assertEqual(str(seq), "x = (1 + 2); y = (x + 3)")
+        self.assertEqual(str(seq), "x = 1 + 2; y = x + 3")
         en = {}
         while seq.reducible:
             seq, en = seq.reduce(en)
@@ -60,7 +60,7 @@ class StatementTest(unittest.TestCase):
             Assign("x", Multiply(Variable("x"), Number(2))),
         )
         en = {"x": Number(1)}
-        self.assertEqual(str(seq), "while (x < 5) { x = (x * 2) }")
+        self.assertEqual(str(seq), "while (x < 5) { x = x * 2 }")
         while seq.reducible:
             seq, en = seq.reduce(en)
         self.assertEqual(en["x"], Number(8))

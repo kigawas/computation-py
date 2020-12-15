@@ -49,10 +49,6 @@ class Add(BinaryExpression):
     def build_atom(value):
         return Number(value)
 
-    @property
-    def to_python(self):
-        return f"lambda e:({self.left.to_python})(e) + ({self.right.to_python})(e)"
-
 
 @dataclass
 class Multiply(BinaryExpression):
@@ -73,13 +69,51 @@ class LessThan(BinaryExpression):
     left: Expression
     right: Expression
 
-    def __str__(self):
-        op = self.op_str()
-        return f"{self.left} {op} {self.right}"
-
     @classmethod
     def op_str(cls) -> str:
         return "<"
+
+    @staticmethod
+    def build_atom(value):
+        return Boolean(value)
+
+
+@dataclass
+class EqualTo(BinaryExpression):
+    left: Expression
+    right: Expression
+
+    @classmethod
+    def op_str(cls) -> str:
+        return "=="
+
+    @staticmethod
+    def build_atom(value):
+        return Boolean(value)
+
+
+@dataclass
+class And(BinaryExpression):
+    left: Expression
+    right: Expression
+
+    @classmethod
+    def op_str(cls) -> str:
+        return "and"
+
+    @staticmethod
+    def build_atom(value):
+        return Boolean(value)
+
+
+@dataclass
+class Or(BinaryExpression):
+    left: Expression
+    right: Expression
+
+    @classmethod
+    def op_str(cls) -> str:
+        return "or"
 
     @staticmethod
     def build_atom(value):

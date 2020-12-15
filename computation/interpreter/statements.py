@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 
-from .expressions import Boolean, Expression
+from .expressions import Boolean
+from .expressions.abstract import Expression, Statement
 
 
 @dataclass
-class DoNothing(Expression):
+class DoNothing(Statement):
     def __str__(self):
         return "do-nothing"
 
@@ -21,16 +22,12 @@ class DoNothing(Expression):
 
 
 @dataclass
-class Assign(Expression):
+class Assign(Statement):
     name: str
     expression: Expression
 
     def __str__(self):
         return f"{self.name} = {self.expression}"
-
-    @property
-    def reducible(self):
-        return True
 
     def reduce(self, environment):
         if self.expression.reducible:
@@ -43,22 +40,25 @@ class Assign(Expression):
 
     @property
     def to_python(self):
-        """Use dict comprehension to eliminate outer function dependency"""
-        return f'lambda e: {{k: v for d in (e, {{"{self.name}": ({self.expression.to_python})(e)}}) for k, v in d.items()}}'
+        """
+        Use dict comprehension or Python 3.9 new dict merge expression
+        to eliminate outer function dependency
+
+        This also works:
+            `f'lambda e: {{k: v for d in (e, {{"{self.name}": ({self.expression.to_python})(e)}}) for k, v in d.items()}}'`
+        """
+
+        return f'lambda e: e | {{"{self.name}": ({self.expression.to_python})(e)}}'
 
 
 @dataclass
-class If(Expression):
+class If(Statement):
     condition: Expression
     consequence: Expression
     alternative: Expression
 
     def __str__(self):
         return f"if ({self.condition}) {{ {self.consequence} }} else {{ {self.alternative} }}"
-
-    @property
-    def reducible(self):
-        return True
 
     def reduce(self, environment):
         if self.condition.reducible:
@@ -92,16 +92,12 @@ class If(Expression):
 
 
 @dataclass
-class Sequence(Expression):
+class Sequence(Statement):
     first: Expression
     second: Expression
 
     def __str__(self):
         return f"{self.first}; {self.second}"
-
-    @property
-    def reducible(self):
-        return True
 
     def reduce(self, environment):
         if self.first == DoNothing():
@@ -119,16 +115,12 @@ class Sequence(Expression):
 
 
 @dataclass
-class While(Expression):
+class While(Statement):
     condition: Expression
     body: Expression
 
     def __str__(self):
         return f"while ({self.condition}) {{ {self.body} }}"
-
-    @property
-    def reducible(self):
-        return True
 
     def reduce(self, environment):
         return If(self.condition, Sequence(self.body, self), DoNothing()), environment
@@ -149,9 +141,12 @@ class While(Expression):
 
     @property
     def to_python(self):
-        # work around using Y-combinator because Python doesn't allow lambda expression including `while`
-        # so have to implement while using recursion
-        # but notice that Python does no tail recursion optimization
-        # it may raise RuntimeError when running too many loops in a while
-        # check the limit by `import sys; sys.getrecursionlimit()`
+        """
+        This is a workaround using Y-combinator because Python doesn't allow lambda expression including `while`,
+        so we have to implement while using recursion.
+
+        But notice that Python does no tail recursion optimization,
+        so it may raise `RuntimeError` when looping too many times,
+        check the limit by `import sys; sys.getrecursionlimit()`
+        """
         return f"(lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args))))(lambda wh: lambda e: e if ({self.condition.to_python})(e) is False else wh(({self.body.to_python})(e)))"
