@@ -1,45 +1,62 @@
 from computation.interpreter.interpreter import Machine
-from computation.interpreter.expressions import (
-    Add,
-    Variable,
-    Number,
-    Multiply,
-    LessThan,
-)
-from computation.interpreter.statements import DoNothing, Sequence, Assign, While
+from computation.interpreter.statements import DoNothing
 from computation.interpreter.parser import parse
 
 
+def check_source(source: str, expected_env: dict, debug: bool = False):
+    seq = parse(source)
+    env = Machine(seq, debug=debug).run().environment
+    for k, v in env.items():
+        env[k] = v.value
+    assert env == expected_env
+    assert eval(seq.to_python)({}) == expected_env
+
+
 def test_interpreter():
-    SEP = "=" * 50
-    seq = Assign("x", Add(Variable("x"), Number(1)))
-    Machine(seq, {"x": Number(5)}, True).run()
+    seq = parse(" ")
+    assert seq == DoNothing()
+    check_source(" ", {})
 
-    print(SEP)
+    source = """
+        x = 5
+        x = x + 1
+    """
+    check_source(source, {"x": 6})
 
-    seq = Sequence(
-        Assign("x", Add(Number(1), Number(1))),
-        Assign("y", Multiply(Variable("x"), Number(2))),
-    )
-    Machine(seq, {}, True).run()
+    source = """
+    x = 1 + 1
+    y = x * 2
+    """
+    check_source(source, {"x": 2, "y": 4})
 
-    print(SEP)
+    source = """
+    x = 1 + 1
+    y = x * 1
+    """
+    check_source(source, {"x": 2, "y": 2})
 
-    seq = Sequence(
-        Assign("x", Add(Number(1), Number(1))),
-        Assign("y", Add(Variable("x"), Number(1))),
-    )
-    Machine(seq, {}, True).run()
+    source = """
+    x = 1
+    while (x < 50) {
+        x = x + 3
+    }
+    """
 
-    print(SEP)
+    check_source(source, {"x": 52})
 
-    seq = While(
-        LessThan(Variable("x"), Number(50)),
-        Assign("x", Add(Variable("x"), Number(3))),
-    )
-    Machine(seq, {"x": Number(1)}).run()
-
-    assert eval(seq.to_python)({"x": 1}) == {"x": 52}
+    source = """
+        a = 1
+        b = 1
+        if (a < 0 + 2 && b < 2) {
+            a = a + 1
+        } else {
+            b = b + 1
+        }
+        if (a < 2 || b < 1) {
+            b = b + 1
+        }
+    """
+    check_source(source, {"a": 2, "b": 1})
 
     source = """
         a = 0
@@ -49,9 +66,4 @@ def test_interpreter():
             b = b + a + 1
         }
     """
-    seq = parse(source)
-    assert Machine(seq).run().environment, {"a": Number(5), "b": Number(20)}
-    assert eval(seq.to_python)({}), {"a": 5, "b": 20}
-
-    seq = parse(" ")
-    assert seq == DoNothing()
+    check_source(source, {"a": 5, "b": 20})
