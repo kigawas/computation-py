@@ -1,5 +1,9 @@
 # computation-py
 
+[![License](https://img.shields.io/github/license/kigawas/computation-py.svg)](https://github.com/kigawas/computation-py)
+[![CI](https://img.shields.io/github/workflow/status/kigawas/computation-py/Build)](https://github.com/kigawas/computation-py/actions)
+[![Codecov](https://img.shields.io/codecov/c/github/kigawas/computation-py.svg)](https://codecov.io/gh/kigawas/computation-py)
+
 Python implementation for [Understanding Computation](http://computationbook.com/).
 
 ## Introduction
