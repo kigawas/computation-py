@@ -25,4 +25,5 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       - run: poetry install
       - name: Run test
-        run: poetry run pytest -s
+        run: poetry run pytest --cov=computation
+      - uses: codecov/codecov-action@v1
