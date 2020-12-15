@@ -15,7 +15,7 @@ class Expression:
 
     def evaluate(self, _environment: dict):
         """
-        Evaluate everything in "recursive descent"
+        Evaluate everything in a "recursive descent" way
         """
         raise NotImplementedError
 
@@ -24,6 +24,12 @@ class Expression:
         Reduce step by step
         """
         raise NotImplementedError
+
+
+class Statement(Expression):
+    @property
+    def reducible(self):
+        return True
 
 
 class Atom(Expression):
@@ -53,7 +59,7 @@ class BinaryExpression(Expression):
 
     def __str__(self):
         op = self.op_str()
-        return f"({self.left} {op} {self.right})"
+        return f"{self.left} {op} {self.right}"
 
     @staticmethod
     def op_str() -> str:

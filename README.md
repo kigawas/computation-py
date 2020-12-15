@@ -16,7 +16,7 @@ I don't want to evangelize, but if you are curious about how a program functions
 
 I just implemented equivalent codes from chapter to chapter, those contents are:
 
-1. Two kinds of interpreters for a simple language
+1. Two kinds of interpreters for a simple language with a parser based on [lark](https://github.com/lark-parser/lark)
 
 2. Generating Python code for this language instead of Ruby (Because Python's anonymous functions are quite more limited than Ruby, there are some hacks like [Y-combinator](https://kigawas.me/posts/y-combinator-in-python/))
 
@@ -30,4 +30,4 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 
 ## What is your Python's version
 
-Python 3.
+Python 3.9
