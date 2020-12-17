@@ -1,61 +1,55 @@
-import unittest
 from computation.automata.pattern import Choose, Repeat, Concatenate, Literal, Empty
 
 
-class PatternTest(unittest.TestCase):
-    def test_pattern(self):
-        pattern = Repeat(Choose(Concatenate(Literal("a"), Literal("b")), Literal("a")))
-        self.assertEqual(repr(pattern), "/(ab|a)*/")
-        self.assertEqual(str(pattern), "(ab|a)*")
+def test_pattern():
+    pattern = Repeat(Choose(Concatenate(Literal("a"), Literal("b")), Literal("a")))
+    assert repr(pattern) == "/(ab|a)*/"
+    assert str(pattern) == "(ab|a)*"
 
-        self.assertFalse(Empty().matches("a"))
-        self.assertTrue(Literal("a").matches("a"))
+    assert not (Empty().matches("a"))
+    assert Literal("a").matches("a")
 
-        pattern = Repeat(Concatenate(Literal("a"), Choose(Empty(), Literal("b"))))
-        self.assertEqual(repr(pattern), "/(a(|b))*/")
-        self.assertTrue(pattern.matches(""))
-        self.assertTrue(pattern.matches("a"))
-        self.assertTrue(pattern.matches("ab"))
-        self.assertTrue(pattern.matches("aba"))
-        self.assertTrue(pattern.matches("abab"))
-        self.assertTrue(pattern.matches("abaab"))
-        self.assertFalse(pattern.matches("bbba"))
-
-    def test_nfa_design(self):
-        nfa_d = Empty().to_nfa_design
-        self.assertTrue(nfa_d.accepts(""))
-        self.assertFalse(nfa_d.accepts("a"))
-
-        nfa_d = Literal("a").to_nfa_design
-        self.assertFalse(nfa_d.accepts(""))
-        self.assertTrue(nfa_d.accepts("a"))
-        self.assertFalse(nfa_d.accepts("b"))
-
-        pattern = Concatenate(Literal("a"), Literal("b"))
-        self.assertTrue(pattern.matches("ab"))
-        self.assertFalse(pattern.matches("a"))
-        self.assertFalse(pattern.matches("b"))
-        self.assertFalse(pattern.matches("abc"))
-
-        pattern = Concatenate(Literal("a"), Concatenate(Literal("b"), Literal("c")))
-        self.assertTrue(pattern.matches("abc"))
-        self.assertFalse(pattern.matches("a"))
-        self.assertFalse(pattern.matches("b"))
-        self.assertFalse(pattern.matches("ab"))
-
-        pattern = Choose(Literal("a"), Literal("b"))
-        self.assertTrue(pattern.matches("a"))
-        self.assertTrue(pattern.matches("b"))
-        self.assertFalse(pattern.matches("c"))
-
-        pattern = Repeat(Literal("a"))
-        self.assertTrue(pattern.matches(""))
-        self.assertTrue(pattern.matches("a"))
-        self.assertTrue(pattern.matches("aa"))
-        self.assertTrue(pattern.matches("aaaaaaaaaa"))
-        self.assertFalse(pattern.matches("b"))
+    pattern = Repeat(Concatenate(Literal("a"), Choose(Empty(), Literal("b"))))
+    assert repr(pattern) == "/(a(|b))*/"
+    assert pattern.matches("")
+    assert pattern.matches("a")
+    assert pattern.matches("ab")
+    assert pattern.matches("aba")
+    assert pattern.matches("abab")
+    assert pattern.matches("abaab")
+    assert not (pattern.matches("bbba"))
 
 
-if __name__ == "__main__":
+def test_nfa_design():
+    nfa_d = Empty().to_nfa_design
+    assert nfa_d.accepts("")
+    assert not (nfa_d.accepts("a"))
 
-    unittest.main()
+    nfa_d = Literal("a").to_nfa_design
+    assert not (nfa_d.accepts(""))
+    assert nfa_d.accepts("a")
+    assert not (nfa_d.accepts("b"))
+
+    pattern = Concatenate(Literal("a"), Literal("b"))
+    assert pattern.matches("ab")
+    assert not (pattern.matches("a"))
+    assert not (pattern.matches("b"))
+    assert not (pattern.matches("abc"))
+
+    pattern = Concatenate(Literal("a"), Concatenate(Literal("b"), Literal("c")))
+    assert pattern.matches("abc")
+    assert not (pattern.matches("a"))
+    assert not (pattern.matches("b"))
+    assert not (pattern.matches("ab"))
+
+    pattern = Choose(Literal("a"), Literal("b"))
+    assert pattern.matches("a")
+    assert pattern.matches("b")
+    assert not (pattern.matches("c"))
+
+    pattern = Repeat(Literal("a"))
+    assert pattern.matches("")
+    assert pattern.matches("a")
+    assert pattern.matches("aa")
+    assert pattern.matches("aaaaaaaaaa")
+    assert not (pattern.matches("b"))

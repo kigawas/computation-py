@@ -14,6 +14,7 @@ from .expressions import (
 )
 from .statements import DoNothing, Sequence, Assign, While, If
 from .expressions.abstract import Expression
+from .exceptions import Unreachable
 
 GRAMMAR = r"""
 %import common.ESCAPED_STRING   -> STRING
@@ -45,7 +46,8 @@ def token_to_atom(token: Token) -> Expression:
         return Number(int(token.value))
     elif token.type == "NAME":
         return Variable(token.value)
-    raise ValueError("Invalid token")
+    else:
+        raise Unreachable("Invalid token")
 
 
 class Transformer(_Transformer):
@@ -64,7 +66,7 @@ class Transformer(_Transformer):
         elif op.value == "||":
             return [Or(left[0], right[0])]
         else:
-            raise ValueError
+            raise Unreachable
 
     def eq_expr(self, items):
         if len(items) == 1:
@@ -76,7 +78,7 @@ class Transformer(_Transformer):
         elif op.value == "==":
             return [EqualTo(left[0], right[0])]
         else:
-            raise ValueError
+            raise Unreachable
 
     def expr(self, items):
         if len(items) == 1:
@@ -88,7 +90,7 @@ class Transformer(_Transformer):
         elif op.value == "*":
             return [Multiply(left[0], right[0])]
         else:
-            raise ValueError
+            raise Unreachable
 
     def if_cond(self, items):
         if len(items) == 2:
@@ -96,7 +98,7 @@ class Transformer(_Transformer):
         elif len(items) == 3:
             return If(items[0][0], self.stmt([items[1]]), self.stmt([items[2]]))
         else:
-            raise ValueError
+            raise Unreachable
 
     def while_loop(self, items):
         return While(items[0][0], self.stmt(items[1:]))
