@@ -1,0 +1,4 @@
+
+
+class Unreachable(ValueError):
+    pass
