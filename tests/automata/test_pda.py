@@ -73,7 +73,7 @@ def test_dpda_design():
             PDARule(2, ")", 2, "b", []),
             PDARule(2, None, 1, "$", ["$"]),
         ]
-    )  # yapf: disable
+    )
     dpda_design = DPDADesign(1, "$", [1], rulebook)
     assert dpda_design.accepts("(((((((((())))))))))")
     assert dpda_design.accepts("()(())((()))(()(()))")

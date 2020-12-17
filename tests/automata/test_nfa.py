@@ -29,7 +29,7 @@ def test_nfa():
             FARule(3, "a", 4),
             FARule(3, "b", 4),
         ]
-    )  # yapf: disable
+    )
     assert not (NFA([1], [4], rulebook).accepting)
     assert NFA([1, 2, 4], [4], rulebook).accepting
 
@@ -70,7 +70,7 @@ def test_nfa_design():
             FARule(3, "b", 1),
             FARule(3, None, 2),
         ]
-    )  # yapf: disable
+    )
     assert rulebook.alphabet == set(["a", "b"])
 
     nfa_design = NFADesign(1, [3], rulebook)
@@ -105,7 +105,7 @@ def test_free_move():
             FARule(5, "a", 6),
             FARule(6, "a", 4),
         ]
-    )  # yapf: disable
+    )
     assert rulebook.next_states([1], None) == set([2, 4])
     assert rulebook.follow_free_moves([1]) == set([1, 2, 4])
 

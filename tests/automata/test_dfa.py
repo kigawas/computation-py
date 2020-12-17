@@ -12,7 +12,7 @@ def test_dfa_rulebook():
             FARule(3, "a", 3),
             FARule(3, "b", 3),
         ]
-    )  # yapf: disable
+    )
     assert rulebook.next_state(1, "a") == 2
     assert rulebook.next_state(1, "b") == 1
     assert rulebook.next_state(2, "b") == 3
@@ -48,7 +48,7 @@ def test_dfa_design():
             FARule(3, "a", 3),
             FARule(3, "b", 3),
         ]
-    )  # yapf: disable
+    )
 
     dfa_design = DFADesign(1, [3], rulebook)
     assert not (dfa_design.accepts("a"))
