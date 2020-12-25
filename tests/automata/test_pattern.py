@@ -1,4 +1,4 @@
-from computation.automata.pattern import Choose, Repeat, Concatenate, Literal, Empty
+from computation.automata.pattern import Choose, Concatenate, Empty, Literal, Repeat
 
 
 def test_pattern():

@@ -44,8 +44,10 @@ class Assign(Statement):
         Use dict comprehension or Python 3.9 new dict merge expression
         to eliminate outer function dependency
 
-        This also works:
-            `f'lambda e: {{k: v for d in (e, {{"{self.name}": ({self.expression.to_python})(e)}}) for k, v in d.items()}}'`
+        This also works before Python 3.9:
+        ```python
+        lambda e: {{k: v for d in (e, {{"{self.name}": ({self.expression.to_python})(e)}}) for k, v in d.items()}}
+        ```
         """
 
         return f'lambda e: e | {{"{self.name}": ({self.expression.to_python})(e)}}'

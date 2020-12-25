@@ -1,8 +1,8 @@
 from computation.interpreter.expressions import (
     Add,
     Boolean,
-    Multiply,
     LessThan,
+    Multiply,
     Number,
     Variable,
 )

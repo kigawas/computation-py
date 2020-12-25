@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, FrozenSet, Iterable, Optional, Union
+from typing import FrozenSet, Iterable, List, Optional, Union
 
 from .utils import detect
 

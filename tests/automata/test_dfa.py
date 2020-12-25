@@ -1,5 +1,5 @@
+from computation.automata.dfa import DFA, DFADesign, DFARulebook
 from computation.automata.farule import FARule
-from computation.automata.dfa import DFARulebook, DFA, DFADesign
 
 
 def test_dfa_rulebook():
