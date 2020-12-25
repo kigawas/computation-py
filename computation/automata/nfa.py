@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional, Iterable, List, Tuple
+from typing import Iterable, List, Optional, Tuple
 
-from .farule import FARule, DFARulebook, NFARulebook
 from .dfa import DFADesign
+from .farule import DFARulebook, FARule, NFARulebook
 
 
 @dataclass

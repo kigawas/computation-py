@@ -1,13 +1,14 @@
-from computation.interpreter.statements import Assign, If, Sequence, While, DoNothing
+import pytest
+
 from computation.interpreter.expressions import (
     Add,
     Boolean,
-    Multiply,
     LessThan,
+    Multiply,
     Number,
     Variable,
 )
-import pytest
+from computation.interpreter.statements import Assign, DoNothing, If, Sequence, While
 
 
 def test_donothing():

@@ -1,5 +1,5 @@
 from computation.automata.farule import FARule
-from computation.automata.nfa import NFARulebook, NFADesign
+from computation.automata.nfa import NFADesign, NFARulebook
 from computation.automata.state import State
 
 

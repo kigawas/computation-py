@@ -1,4 +1,4 @@
-from computation.turing_machine.tape import Tape, TMRule, TMConfiguration, DTMRulebook
+from computation.turing_machine.tape import DTMRulebook, Tape, TMConfiguration, TMRule
 
 
 def test_tape():

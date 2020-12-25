@@ -1,4 +1,4 @@
-from computation.automata.nfa import FARule, NFA, NFARulebook, NFADesign, NFASimulation
+from computation.automata.nfa import NFA, FARule, NFADesign, NFARulebook, NFASimulation
 
 
 def test_nfa_rulebook():

@@ -44,7 +44,7 @@ class Atom(Expression):
 
     @property
     def to_python(self):
-        return f"lambda e: {self.value}"
+        return f"lambda _: {self.value}"
 
     def evaluate(self, _environment):
         return self

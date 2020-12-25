@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-
-from .abstract import Atom, Expression, BinaryExpression
+from .abstract import Atom, BinaryExpression, Expression
 
 
 @dataclass(order=True)

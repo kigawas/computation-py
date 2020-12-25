@@ -1,15 +1,15 @@
 import pytest
 
 from computation.automata.pda import (
-    Stack,
+    DPDA,
+    NPDA,
+    DPDADesign,
+    DPDARulebook,
+    NPDADesign,
+    NPDARulebook,
     PDAConfiguration,
     PDARule,
-    DPDARulebook,
-    DPDA,
-    DPDADesign,
-    NPDARulebook,
-    NPDA,
-    NPDADesign,
+    Stack,
 )
 
 
