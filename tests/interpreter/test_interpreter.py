@@ -6,6 +6,7 @@ from computation.interpreter.statements import DoNothing
 def check_source(source: str, expected_env: dict, debug: bool = False):
     seq = parse(source)
     env = Machine(seq, debug=debug).run().environment
+
     for k, v in env.items():
         env[k] = v.value
     assert env == expected_env
@@ -55,7 +56,6 @@ def test_interpreter():
             x = x + 3
         }
     """
-
     check_source(source, {"x": 52})
 
     source = """
