@@ -3,13 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional
 
-from .farule import DFARulebook
+from .farule import DFARulebook, State
 
 
 @dataclass
 class DFA:
-    current_state: int
-    accept_states: List[int]
+    current_state: State
+    accept_states: List[State]
     rulebook: DFARulebook
 
     @property
@@ -28,13 +28,13 @@ class DFA:
 
 @dataclass
 class DFADesign:
-    start_state: int
-    accept_states: List[int]
+    start_state: State
+    accept_states: List[State]
     rulebook: DFARulebook
 
     @property
     def to_dfa(self) -> DFA:
         return DFA(self.start_state, self.accept_states, self.rulebook)
 
-    def accepts(self, string: str):
+    def accepts(self, string: str) -> bool:
         return self.to_dfa.read_string(string).accepting

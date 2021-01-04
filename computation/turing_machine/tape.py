@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from computation.automata.utils import detect
+from ..automata.utils import detect
 
 
 @dataclass

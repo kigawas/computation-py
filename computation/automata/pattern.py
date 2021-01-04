@@ -1,6 +1,6 @@
-from computation.automata.farule import FARule
-from computation.automata.nfa import NFADesign, NFARulebook
-from computation.automata.state import State
+from .farule import FARule
+from .nfa import NFADesign, NFARulebook
+from .state import State
 
 
 class Pattern:

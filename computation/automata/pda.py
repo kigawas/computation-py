@@ -1,5 +1,5 @@
-from computation.automata.state import State
-from computation.automata.utils import detect
+from .state import State
+from .utils import detect
 
 
 class Stack:
