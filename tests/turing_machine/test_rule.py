@@ -7,7 +7,7 @@ from computation.turing_machine.rule import (
     Direction,
 )
 
-# add1 rulebook
+# increment binary number rulebook
 rulebook = DTMRulebook(
     [
         TMRule(1, "0", 2, "1", Direction.RIGHT),
@@ -21,14 +21,19 @@ rulebook = DTMRulebook(
 
 
 def test_rule():
-    tape = Tape(["1", "0", "1"], "1", ["_"])
-
-    configuration = TMConfiguration(1, tape)
     dtm = DTM(
-        configuration,
+        TMConfiguration(1, Tape(["1", "0", "1"], "1", ["_"])),
         [3],
         rulebook,
     )
     dtm.run()
     assert dtm.current_configuration.state == 3
     assert dtm.current_configuration.tape == Tape(["1", "1", "0"], "0", ["_"])
+
+    dtm = DTM(
+        TMConfiguration(1, Tape(["1", "2", "1"], "1", ["_"])),
+        [3],
+        rulebook,
+    )
+    dtm.run()
+    assert dtm.is_stuck

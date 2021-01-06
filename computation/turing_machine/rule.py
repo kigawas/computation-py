@@ -43,6 +43,9 @@ class TMRule:
 class DTMRulebook:
     rules: List[TMRule]
 
+    def applies_to(self, configuration: TMConfiguration):
+        return self.rule_for(configuration) is not None
+
     def rule_for(self, configuration: TMConfiguration):
         return detect(self.rules, lambda rule: rule.applies_to(configuration))
 
@@ -60,6 +63,12 @@ class DTM:
     def accepting(self):
         return self.current_configuration.state in self.accept_states
 
+    @property
+    def is_stuck(self):
+        return not self.accepting and not self.rulebook.applies_to(
+            self.current_configuration
+        )
+
     def step(self):
         self.current_configuration = self.rulebook.next_configuration(
             self.current_configuration
@@ -70,7 +79,7 @@ class DTM:
             print(self.current_configuration)
 
         while True:
-            if self.accepting:
+            if self.accepting or self.is_stuck:
                 return
 
             self.step()
