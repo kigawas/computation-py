@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from .expressions import Boolean
 from .expressions.abstract import Expression, Statement
+from ..exceptions import Unreachable
 
 
 @dataclass
@@ -78,7 +79,7 @@ class If(Statement):
             elif self.condition == Boolean(False):
                 return self.alternative, environment
 
-            raise ValueError("Invalid condition")
+            raise Unreachable
 
     def evaluate(self, environment):
         if self.condition.evaluate(environment) == Boolean(True):
@@ -86,7 +87,7 @@ class If(Statement):
         elif self.condition.evaluate(environment) == Boolean(False):
             return self.alternative.evaluate(environment)
 
-        raise ValueError("Invalid condition")
+        raise Unreachable
 
     @property
     def to_python(self):
