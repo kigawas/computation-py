@@ -3,7 +3,7 @@ from typing import List, Type
 from lark import Lark, Token
 from lark import Transformer as _Transformer
 
-from .exceptions import Unreachable
+from ..exceptions import Unreachable
 from .expressions import Add, And, EqualTo, LessThan, Multiply, Number, Or, Variable
 from .expressions.abstract import BinaryExpression, Expression
 from .statements import Assign, DoNothing, If, Sequence, While

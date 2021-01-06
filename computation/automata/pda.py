@@ -1,10 +1,14 @@
-from computation.automata.state import State
-from computation.automata.utils import detect
+from dataclasses import dataclass
+from typing import Iterable, List, Optional
+
+from ..utils import detect
+from .farule import State
+from .state import State as _State
 
 
+@dataclass(frozen=True)
 class Stack:
-    def __init__(self, contents):
-        self.contents = contents
+    contents: List[State]
 
     def push(self, character):
         return Stack(self.contents + [character])
@@ -20,31 +24,13 @@ class Stack:
     def __hash__(self):
         return hash(tuple(self.contents))
 
-    def __str__(self):
-        return f"Stack({self.contents})"
 
-    def __eq__(self, other):
-        return self.contents == other.contents
-
-    def __ne__(self, other):
-        return self.contents != other.contents
-
-
+@dataclass(eq=True)
 class PDAConfiguration:
-    STUCK_STATE = State()
+    state: State
+    stack: Stack
 
-    def __init__(self, state, stack):
-        self.state = state
-        self.stack = stack
-
-    def __repr__(self):
-        return f"PDAConfiguration({self.state}, {self.stack})"
-
-    def __str__(self):
-        return f"State: {self.state}, Stack: {self.stack}"
-
-    def __eq__(self, other):
-        return self.state == other.state and self.stack == other.stack
+    STUCK_STATE = _State()
 
     def __hash__(self):
         return hash(self.state) ^ hash("".join(self.stack.contents))
@@ -58,11 +44,13 @@ class PDAConfiguration:
         return self.state == PDAConfiguration.STUCK_STATE
 
 
+@dataclass
 class PDARule:
-    def __init__(self, state, character, next_state, pop_character, push_characters):
-        self.state, self.character = state, character
-        self.next_state, self.pop_character = next_state, pop_character
-        self.push_characters = push_characters
+    state: State
+    character: Optional[str]
+    next_state: State
+    pop_character: str
+    push_characters: Iterable[str]
 
     def applies_to(self, configuration, character):
         return (
@@ -81,9 +69,9 @@ class PDARule:
         return PDAConfiguration(self.next_state, self.next_stack(configuration))
 
 
+@dataclass
 class DPDARulebook:
-    def __init__(self, rules):
-        self.rules = rules
+    rules: List[PDARule]
 
     def rule_for(self, configuration, character):
         return detect(
@@ -103,11 +91,11 @@ class DPDARulebook:
             return configuration
 
 
+@dataclass
 class DPDA:
-    def __init__(self, current_configuration, accept_states, rulebook):
-        self._current_configuration = current_configuration
-        self.accept_states = accept_states
-        self.rulebook = rulebook
+    _current_configuration: PDAConfiguration
+    accept_states: List[State]
+    rulebook: DPDARulebook
 
     @property
     def accepting(self):
@@ -140,10 +128,12 @@ class DPDA:
         return self.rulebook.follow_free_moves(self._current_configuration)
 
 
+@dataclass
 class DPDADesign:
-    def __init__(self, start_state, bottom_character, accept_states, rulebook):
-        self.start_state, self.bottom_character = start_state, bottom_character
-        self.accept_states, self.rulebook = accept_states, rulebook
+    start_state: State
+    bottom_character: str
+    accept_states: List[State]
+    rulebook: DPDARulebook
 
     @property
     def to_dpda(self):
@@ -155,12 +145,9 @@ class DPDADesign:
         return self.to_dpda.read_string(string).accepting
 
 
+@dataclass
 class NPDARulebook:
-    def __init__(self, rules):
-        self.rules = rules
-
-    def __str__(self):
-        return f"{self.rules}"
+    rules: List[PDARule]
 
     def rule_for(self, configuration, character):
         return [
@@ -189,11 +176,11 @@ class NPDARulebook:
             return self.follow_free_moves(more_configurations.union(configurations))
 
 
+@dataclass
 class NPDA:
-    def __init__(self, current_configurations, accept_states, rulebook):
-        self._current_configurations = set(current_configurations)
-        self.accept_states = set(accept_states)
-        self.rulebook = rulebook
+    _current_configurations: PDAConfiguration
+    accept_states: Iterable[State]
+    rulebook: NPDARulebook
 
     @property
     def accepting(self):
@@ -220,18 +207,22 @@ class NPDA:
         return self.rulebook.follow_free_moves(self._current_configurations)
 
 
+@dataclass
 class NPDADesign:
-    def __init__(self, start_state, bottom_character, accept_states, rulebook):
-        self.start_state = start_state
-        self.bottom_character = bottom_character
-        self.accept_states = accept_states
-        self.rulebook = rulebook
+    start_state: State
+    bottom_character: str
+    accept_states: List[State]
+    rulebook: NPDARulebook
 
     @property
     def to_npda(self):
         start_stack = Stack([self.bottom_character])
         start_configuration = PDAConfiguration(self.start_state, start_stack)
-        return NPDA(set([start_configuration]), self.accept_states, self.rulebook)
+        return NPDA(
+            [start_configuration],
+            self.accept_states,
+            self.rulebook,
+        )
 
     def accepts(self, string):
         return self.to_npda.read_string(string).accepting

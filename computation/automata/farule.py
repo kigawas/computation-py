@@ -1,39 +1,43 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import FrozenSet, Iterable, List, Optional, Union
+from typing import Any, FrozenSet, Iterable, List, Optional, Union
 
-from .utils import detect
+from ..exceptions import Unreachable
+from ..utils import detect
+
+State = Union[int, Any]
 
 
 @dataclass(frozen=True)
 class FARule:
-    state: Union[int, FrozenSet[int]]
+    state: State
     character: Optional[str]
-    next_state: Union[int, FrozenSet[int]]
+    next_state: State
 
     @property
-    def follow(self) -> Union[int, FrozenSet[int]]:
+    def follow(self) -> State:
         return self.next_state
 
-    def applies_to(self, state: int, character: Optional[str]) -> bool:
+    def applies_to(self, state: State, character: Optional[str]) -> bool:
         if character is None:
             return self.state == state and self.character is None
-        return self.state == state and self.character == character
 
-    def reverse(self) -> FARule:
-        return FARule(self.next_state, self.character, self.state)
+        return self.state == state and self.character == character
 
 
 @dataclass(frozen=True)
 class DFARulebook:
     rules: List[FARule]
 
-    def rule_for(self, state: int, character: Optional[str]) -> FARule:
+    def rule_for(self, state: State, character: Optional[str]) -> Optional[FARule]:
         return detect(self.rules, lambda rule: rule.applies_to(state, character))
 
-    def next_state(self, state: int, character: Optional[str]) -> int:
-        return self.rule_for(state, character).follow
+    def next_state(self, state: State, character: Optional[str]) -> State:
+        rule = self.rule_for(state, character)
+        if not rule:
+            raise Unreachable
+        return rule.follow
 
 
 @dataclass(frozen=True)
@@ -46,19 +50,19 @@ class NFARulebook:
             [rule.character for rule in self.rules if rule.character is not None]
         )
 
-    def rules_for(self, state: int, character: Optional[str]) -> List[FARule]:
+    def rules_for(self, state: State, character: Optional[str]) -> List[FARule]:
         return [r for r in self.rules if r.applies_to(state, character)]
 
-    def follow_rules_for(self, state: int, character: Optional[str]) -> List[int]:
+    def follow_rules_for(self, state: State, character: Optional[str]) -> List[State]:
         return [r.follow for r in self.rules_for(state, character)]
 
     def next_states(
-        self, states: Iterable[int], character: Optional[str]
-    ) -> FrozenSet[int]:
+        self, states: Iterable[State], character: Optional[str]
+    ) -> FrozenSet[State]:
         next_states = [self.follow_rules_for(s, character) for s in states]
         return frozenset(sum(next_states, []))
 
-    def follow_free_moves(self, states: Iterable[int]) -> Iterable[int]:
+    def follow_free_moves(self, states: Iterable[int]) -> Iterable[State]:
         more_states = self.next_states(states, None)
         if more_states.issubset(states):
             return states
