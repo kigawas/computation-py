@@ -1,8 +1,15 @@
 from dataclasses import dataclass
 from typing import List
+from enum import Enum, auto
 
+from ..exceptions import Unreachable
 from ..utils import detect
 from .tape import TMConfiguration, Tape
+
+
+class Direction(Enum):
+    LEFT = auto()
+    RIGHT = auto()
 
 
 @dataclass
@@ -11,7 +18,7 @@ class TMRule:
     character: str
     next_state: int
     write_character: str
-    direction: str
+    direction: Direction
 
     def applies_to(self, configuration: TMConfiguration) -> bool:
         return (
@@ -21,12 +28,12 @@ class TMRule:
 
     def next_tape(self, configuration: TMConfiguration) -> Tape:
         written_tape = configuration.tape.write(self.write_character)
-        if self.direction == "left":
+        if self.direction == Direction.LEFT:
             return written_tape.move_head_left
-        elif self.direction == "right":
+        elif self.direction == Direction.RIGHT:
             return written_tape.move_head_right
         else:
-            raise ValueError
+            raise Unreachable
 
     def follow(self, configuration: TMConfiguration) -> TMConfiguration:
         return TMConfiguration(self.next_state, self.next_tape(configuration))

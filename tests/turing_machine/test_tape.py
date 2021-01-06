@@ -1,5 +1,5 @@
 from computation.turing_machine.tape import Tape, TMConfiguration
-from computation.turing_machine.rule import TMRule
+from computation.turing_machine.rule import TMRule, Direction
 
 
 def test_tape():
@@ -9,6 +9,6 @@ def test_tape():
     assert tape.move_head_right == Tape(["1", "0", "1", "1"], "_", [])
     assert tape.move_head_right.write("0") == Tape(["1", "0", "1", "1"], "0", [])
 
-    rule = TMRule(1, "0", 2, "1", "right")
+    rule = TMRule(1, "0", 2, "1", Direction.RIGHT)
     config = TMConfiguration(1, Tape([], "0", []))
     assert rule.follow(config) == TMConfiguration(2, Tape(["1"], "_", []))
