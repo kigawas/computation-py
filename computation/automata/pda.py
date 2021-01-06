@@ -3,7 +3,7 @@ from typing import Iterable, List, Optional
 
 from .farule import State
 from .state import State as _State
-from .utils import detect
+from ..utils import detect
 
 
 @dataclass(frozen=True)

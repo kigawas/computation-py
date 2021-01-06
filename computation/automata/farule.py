@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import FrozenSet, Iterable, List, Optional, Any, Union
 
-from .utils import detect
+from ..utils import detect
 
 State = Union[int, Any]
 
@@ -32,11 +32,14 @@ class FARule:
 class DFARulebook:
     rules: List[FARule]
 
-    def rule_for(self, state: State, character: Optional[str]) -> FARule:
+    def rule_for(self, state: State, character: Optional[str]) -> Optional[FARule]:
         return detect(self.rules, lambda rule: rule.applies_to(state, character))
 
     def next_state(self, state: State, character: Optional[str]) -> State:
-        return self.rule_for(state, character).follow
+        rule = self.rule_for(state, character)
+        if not rule:
+            raise ValueError
+        return rule.follow
 
 
 @dataclass(frozen=True)

@@ -1,33 +1,14 @@
-from computation.turing_machine.tape import DTMRulebook, Tape, TMConfiguration, TMRule
+from computation.turing_machine.tape import Tape, TMConfiguration
+from computation.turing_machine.rule import TMRule
 
 
 def test_tape():
-    tape = Tape(["1", "0", "1"], "1", [], "_")
-    print()
-    print(tape)
-    print(tape.move_head_left)
-    print(tape.move_head_left.write("0"))
-    print(tape.move_head_right)
-    print(tape.move_head_right.write("0"))
+    tape = Tape(["1", "0", "1"], "1", [])
+    assert tape.move_head_left == Tape(["1", "0"], "1", ["1"])
+    assert tape.move_head_left.write("0") == Tape(["1", "0"], "0", ["1"])
+    assert tape.move_head_right == Tape(["1", "0", "1", "1"], "_", [])
+    assert tape.move_head_right.write("0") == Tape(["1", "0", "1", "1"], "0", [])
 
     rule = TMRule(1, "0", 2, "1", "right")
-    print(rule.follow(TMConfiguration(1, Tape([], "0", [], "_"))))
-
-    rulebook = DTMRulebook(
-        [
-            TMRule(1, "0", 2, "1", "right"),
-            TMRule(1, "1", 1, "0", "left"),
-            TMRule(1, "_", 2, "1", "right"),
-            TMRule(2, "0", 2, "0", "right"),
-            TMRule(2, "1", 2, "1", "right"),
-            TMRule(2, "_", 3, "_", "left"),
-        ]
-    )
-    configuration = TMConfiguration(1, tape)
-    print(configuration)
-    configuration = rulebook.next_configuration(configuration)
-    print(configuration)
-    configuration = rulebook.next_configuration(configuration)
-    print(configuration)
-    configuration = rulebook.next_configuration(configuration)
-    print(configuration)
+    config = TMConfiguration(1, Tape([], "0", []))
+    assert rule.follow(config) == TMConfiguration(2, Tape(["1"], "_", []))

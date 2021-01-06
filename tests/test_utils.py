@@ -1,4 +1,4 @@
-from computation.automata.utils import detect
+from computation.utils import detect
 
 
 def test_detect():
