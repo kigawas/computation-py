@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import FrozenSet, Iterable, List, Optional, Any, Union
+from typing import Any, FrozenSet, Iterable, List, Optional, Union
 
+from ..exceptions import Unreachable
 from ..utils import detect
 
 State = Union[int, Any]
@@ -24,9 +25,6 @@ class FARule:
 
         return self.state == state and self.character == character
 
-    def reverse(self) -> FARule:
-        return FARule(self.next_state, self.character, self.state)
-
 
 @dataclass(frozen=True)
 class DFARulebook:
@@ -38,7 +36,7 @@ class DFARulebook:
     def next_state(self, state: State, character: Optional[str]) -> State:
         rule = self.rule_for(state, character)
         if not rule:
-            raise ValueError
+            raise Unreachable
         return rule.follow
 
 

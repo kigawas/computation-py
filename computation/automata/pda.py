@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Iterable, List, Optional
 
+from ..utils import detect
 from .farule import State
 from .state import State as _State
-from ..utils import detect
 
 
 @dataclass(frozen=True)

@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import List
 from enum import Enum, auto
+from typing import List
 
 from ..exceptions import Unreachable
 from ..utils import detect
-from .tape import TMConfiguration, Tape
+from .tape import Tape, TMConfiguration
 
 
 class Direction(Enum):

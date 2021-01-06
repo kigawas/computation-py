@@ -1,5 +1,5 @@
+from computation.turing_machine.rule import Direction, TMRule
 from computation.turing_machine.tape import Tape, TMConfiguration
-from computation.turing_machine.rule import TMRule, Direction
 
 
 def test_tape():

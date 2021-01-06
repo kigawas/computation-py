@@ -1,10 +1,10 @@
 from computation.turing_machine.rule import (
+    DTM,
+    Direction,
     DTMRulebook,
+    Tape,
     TMConfiguration,
     TMRule,
-    DTM,
-    Tape,
-    Direction,
 )
 
 # increment binary number rulebook
