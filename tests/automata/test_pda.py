@@ -12,6 +12,16 @@ from computation.automata.pda import (
     Stack,
 )
 
+# check parentheses
+rulebook = DPDARulebook(
+    [
+        PDARule(1, "(", 2, "$", ["b", "$"]),
+        PDARule(2, "(", 2, "b", ["b", "b"]),
+        PDARule(2, ")", 2, "b", []),
+        PDARule(2, None, 1, "$", ["$"]),
+    ]
+)
+
 
 def test_pda_rule():
     rule = PDARule(1, "(", 2, "$", ["b", "$"])
@@ -28,28 +38,11 @@ def test_pda_config():
 
 def test_pda_rulebook():
     configuration = PDAConfiguration(1, Stack(["$"]))
-    rulebook = DPDARulebook(
-        [
-            PDARule(1, "(", 2, "$", ["b", "$"]),
-            PDARule(2, "(", 2, "b", ["b", "b"]),
-            PDARule(2, ")", 2, "b", []),
-            PDARule(2, None, 1, "$", ["$"]),
-        ]
-    )
-
     configuration = rulebook.next_configuration(configuration, "(")
     assert configuration.stack == Stack(["$", "b"])
 
 
 def test_dpda():
-    rulebook = DPDARulebook(
-        [
-            PDARule(1, "(", 2, "$", ["b", "$"]),
-            PDARule(2, "(", 2, "b", ["b", "b"]),
-            PDARule(2, ")", 2, "b", []),
-            PDARule(2, None, 1, "$", ["$"]),
-        ]
-    )
     dpda = DPDA(PDAConfiguration(1, Stack(["$"])), [1], rulebook)
     assert dpda.accepting
     assert not (dpda.read_string("(()").accepting)
@@ -64,26 +57,19 @@ def test_dpda():
     assert not (dpda.read_string("(()(").accepting)
     assert dpda.read_string("))()").accepting
 
+    dpda = DPDA(PDAConfiguration(1, Stack(["$"])), [1], rulebook)
+    dpda.read_string("())")
+    assert dpda.current_configuration.state == PDAConfiguration.STUCK_STATE
+    assert not dpda.accepting
+    assert dpda.is_stuck
+
 
 def test_dpda_design():
-    rulebook = DPDARulebook(
-        [
-            PDARule(1, "(", 2, "$", ["b", "$"]),
-            PDARule(2, "(", 2, "b", ["b", "b"]),
-            PDARule(2, ")", 2, "b", []),
-            PDARule(2, None, 1, "$", ["$"]),
-        ]
-    )
     dpda_design = DPDADesign(1, "$", [1], rulebook)
     assert dpda_design.accepts("(((((((((())))))))))")
     assert dpda_design.accepts("()(())((()))(()(()))")
     assert not (dpda_design.accepts("(()(()(()()(()()))()"))
     assert not (dpda_design.accepts("())"))
-
-    dpda = DPDA(PDAConfiguration(1, Stack(["$"])), [1], rulebook)
-    dpda.read_string("())")
-    assert not (dpda.accepting)
-    assert dpda.is_stuck
 
 
 def test_npda_design():
