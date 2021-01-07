@@ -15,6 +15,7 @@ def test_donothing():
     assert DoNothing() == DoNothing()
     assert str(DoNothing()) == "do-nothing"
     assert DoNothing() != 1
+    assert DoNothing().evaluate({"x": 1}) == {"x": 1}
 
 
 def test_assign():
@@ -90,6 +91,9 @@ def test_while():
         Assign("x", Add(Variable("x"), Number(1))),
     )
     en = st.evaluate({"x": Number(1)})
+    assert en["x"] == Number(1000)
+
+    en = st.evaluate_with_recursion({"x": Number(500)})
     assert en["x"] == Number(1000)
 
     with pytest.raises(RuntimeError):
