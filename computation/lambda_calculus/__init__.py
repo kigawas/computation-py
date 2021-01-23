@@ -1,119 +1,76 @@
-from typing import Callable, Generator, List, TypeVar
+__all__ = [
+    "ZERO",
+    "ONE",
+    "TWO",
+    "THREE",
+    "FIVE",
+    "IF",
+    "NOT",
+    "TRUE",
+    "FALSE",
+    "IS_ZERO",
+    "INCREMENT",
+    "SLIDE",
+    "DECREMENT",
+    "ADD",
+    "SUB",
+    "MUL",
+    "POW",
+    "IS_LESS_OR_EQUAL",
+    "IS_LESS",
+    "FOUR",
+    "SEVEN",
+    "TEN",
+    "FIFTEEN",
+    "HUNDRED",
+    "Z_COMBINATOR",
+    "MOD",
+    "RANGE",
+    "CLOSED_RANGE",
+    "FOLD",
+    "MAP",
+    "ZEROS",
+    "UPWARDS_OF",
+    "MULTIPLES_OF",
+    "PAIR",
+    "LEFT",
+    "RIGHT",
+    "EMPTY",
+    "UNSHIFT",
+    "IS_EMPTY",
+    "FIRST",
+    "REST",
+    "to_array",
+    "to_boolean",
+    "to_integer",
+    "to_generator",
+    "to_integer_array",
+]
 
-# generics
-T = TypeVar("T")
-IdentityF = Callable[[T], T]
-IntF = IdentityF[int]
-BoolF = IdentityF[bool]
-Endofunctor = Callable[[Callable[[T], T]], Callable[[T], T]]  # IdentityF[IdentityF]
-ReductionFunctor = Callable[
-    [Callable[[Callable[[T], T]], Callable[[T], T]]], T
-]  # Callable[[Endofunctor], T]
-
-# Church numbers
-# n(F) => call F n times
-ZERO = lambda f: lambda x: x
-ONE = lambda f: lambda x: f(x)
-TWO = lambda f: lambda x: f(f(x))
-THREE = lambda f: lambda x: f(f(f(x)))
-FIVE = lambda f: lambda x: f(f(f(f(f(x)))))
-
-
-# conditions
-TRUE = lambda x: lambda y: x
-FALSE = lambda x: lambda y: y
-IF = lambda b: b  # reduced from `lambda b: lambda x: lambda y: b(x)(y)`
-NOT = lambda b: b(FALSE)(TRUE)
-IS_ZERO = lambda n: n(lambda _: FALSE)(TRUE)
-
-
-# pair
-PAIR = lambda x: lambda y: lambda f: f(x)(y)
-LEFT = lambda f: f(lambda x: lambda y: x)
-RIGHT = lambda f: f(lambda x: lambda y: y)
-
-# calculation
-INCREMENT = lambda n: lambda f: lambda x: f(n(f)(x))
-SLIDE = lambda f: PAIR(RIGHT(f))(INCREMENT(RIGHT(f)))
-DECREMENT = lambda n: LEFT(n(SLIDE)(PAIR(ZERO)(ZERO)))
-ADD = lambda m: lambda n: n(INCREMENT)(m)
-SUB = lambda m: lambda n: n(DECREMENT)(m)
-MUL = lambda m: lambda n: n(ADD(m))(ZERO)
-POW = lambda m: lambda n: n(MUL(m))(ONE)
-IS_LESS_OR_EQUAL = lambda m: lambda n: IS_ZERO(SUB(m)(n))
-IS_LESS = lambda m: lambda n: NOT(IS_LESS_OR_EQUAL(n)(m))
-
-# more numbers
-FOUR = ADD(TWO)(TWO)
-SEVEN = ADD(TWO)(FIVE)
-TEN = MUL(TWO)(FIVE)
-FIFTEEN = MUL(THREE)(FIVE)
-HUNDRED = POW(TEN)(TWO)
-
-# Y combinator equiv
-Z_COMBINATOR = lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args)))
-
-# list
-EMPTY = PAIR(TRUE)(TRUE)
-UNSHIFT = lambda l: lambda x: PAIR(FALSE)(PAIR(x)(l))
-IS_EMPTY = LEFT
-FIRST = lambda l: LEFT(RIGHT(l))
-REST = lambda l: RIGHT(RIGHT(l))
-
-# recursive algorithms, see equivalent python code in test_lambda.py
-MOD = Z_COMBINATOR(
-    lambda mod: lambda m: lambda n: IF(IS_LESS_OR_EQUAL(n)(m))(
-        lambda *args: mod(SUB(m)(n))(n)(*args)
-    )(m)
+from .basic import ZERO, ONE, TWO, THREE, FIVE, IF, NOT, TRUE, FALSE, IS_ZERO
+from .calc import (
+    INCREMENT,
+    SLIDE,
+    DECREMENT,
+    ADD,
+    SUB,
+    MUL,
+    POW,
+    IS_LESS_OR_EQUAL,
+    IS_LESS,
+    FOUR,
+    SEVEN,
+    TEN,
+    FIFTEEN,
+    HUNDRED,
 )
-
-RANGE = Z_COMBINATOR(
-    lambda range: lambda m: lambda n: IF(IS_LESS(m)(n))(
-        lambda *args: UNSHIFT(range(INCREMENT(m))(n))(m)(*args)
-    )(EMPTY)
+from .funcs import Z_COMBINATOR, MOD, RANGE, CLOSED_RANGE, FOLD, MAP
+from .streams import ZEROS, UPWARDS_OF, MULTIPLES_OF
+from .struct import PAIR, LEFT, RIGHT, EMPTY, UNSHIFT, IS_EMPTY, FIRST, REST
+from .reduction import (
+    to_array,
+    to_boolean,
+    to_integer,
+    to_generator,
+    to_integer_array,
 )
-CLOSED_RANGE = lambda m: lambda n: RANGE(m)(INCREMENT(n))
-
-FOLD = Z_COMBINATOR(
-    lambda fold: lambda l: lambda init: lambda func: IF(IS_EMPTY(l))(init)(
-        lambda *args: func(FIRST(l))(fold(REST(l))(init)(func))(*args)
-    )
-)
-
-MAP = lambda l: lambda func: FOLD(l)(EMPTY)(
-    lambda x: lambda result: UNSHIFT(result)(func(x))
-)
-
-# streams, see equivalent python code in test_lambda.py
-ZEROS = Z_COMBINATOR(lambda zeros: UNSHIFT(zeros)(ZERO))
-UPWARDS_OF = Z_COMBINATOR(
-    lambda upwards: lambda n: UNSHIFT(lambda *args: upwards(INCREMENT(n))(*args))(n)
-)
-MULTIPLES_OF = lambda m: Z_COMBINATOR(
-    lambda multiples: lambda n: UNSHIFT(lambda *args: multiples(ADD(m)(n))(*args))(n)
-)(m)
-
-
-def to_integer(lb: Callable[[IntF], IntF]) -> int:
-    return lb(lambda n: n + 1)(0)
-
-
-def to_boolean(lb: Callable[[bool], BoolF]) -> bool:
-    return lb(True)(False)
-
-
-def to_generator(
-    lb: Endofunctor, callback: ReductionFunctor[T]
-) -> Generator[T, None, None]:
-    while not to_boolean(IS_EMPTY(lb)):
-        first = FIRST(lb)
-        yield callback(first)
-        lb = REST(lb)
-
-
-def to_array(lb: Endofunctor, callback: ReductionFunctor[T]) -> List[T]:
-    return list(to_generator(lb, callback))
-
-
-def to_integer_array(lb: Endofunctor) -> List[int]:
-    return to_array(lb, to_integer)
