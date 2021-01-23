@@ -1,7 +1,7 @@
 from itertools import islice
 from typing import Callable, Generator, List, TypeVar
 
-from computation.lambda_calculus.types import (
+from computation.lambda_calculus import (
     ADD,
     CLOSED_RANGE,
     DECREMENT,
