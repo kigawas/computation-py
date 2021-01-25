@@ -24,7 +24,7 @@ from .statements import Assign, DoNothing, If, Sequence, While
 # note: lark is not exhaustive, so `expr: term ('+' term)*` won't work
 GRAMMAR = r"""
 %import common.ESCAPED_STRING   -> STRING
-%import common.INT    -> NUMBER
+%import common.INT              -> NUMBER
 %import common.CNAME            -> NAME
 %import common.WS
 %ignore WS

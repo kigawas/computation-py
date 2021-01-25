@@ -23,17 +23,19 @@ def test_interpreter():
     source = """
         x = 5
         x = x + 1
+        x = x - 2 - 3
+        x = x + 3 + 2
     """
     check_source(source, {"x": 6})
 
     source = """
-        x = 1 + 1
+        x = 1 + 2 + 1 - 2
         y = x * 2
     """
     check_source(source, {"x": 2, "y": 4})
 
     source = """
-        x = 1 + 1
+        x = 1 - (0 - 1)
         y = x * 1
     """
     check_source(source, {"x": 2, "y": 2})
