@@ -1,7 +1,7 @@
+from .basic import ZERO
+from .calc import ADD, INCREMENT
 from .funcs import Z_COMBINATOR
 from .struct import UNSHIFT
-from .calc import INCREMENT, ADD
-from .basic import ZERO
 
 # streams, see equivalent python code in test_lambda.py
 ZEROS = Z_COMBINATOR(lambda zeros: UNSHIFT(zeros)(ZERO))

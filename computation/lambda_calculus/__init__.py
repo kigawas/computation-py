@@ -47,30 +47,24 @@ __all__ = [
     "to_integer_array",
 ]
 
-from .basic import ZERO, ONE, TWO, THREE, FIVE, IF, NOT, TRUE, FALSE, IS_ZERO
+from .basic import FALSE, FIVE, IF, IS_ZERO, NOT, ONE, THREE, TRUE, TWO, ZERO
 from .calc import (
-    INCREMENT,
-    SLIDE,
-    DECREMENT,
     ADD,
-    SUB,
+    DECREMENT,
+    FIFTEEN,
+    FOUR,
+    HUNDRED,
+    INCREMENT,
+    IS_LESS,
+    IS_LESS_OR_EQUAL,
     MUL,
     POW,
-    IS_LESS_OR_EQUAL,
-    IS_LESS,
-    FOUR,
     SEVEN,
+    SLIDE,
+    SUB,
     TEN,
-    FIFTEEN,
-    HUNDRED,
 )
-from .funcs import Z_COMBINATOR, MOD, RANGE, CLOSED_RANGE, FOLD, MAP
-from .streams import ZEROS, UPWARDS_OF, MULTIPLES_OF
-from .struct import PAIR, LEFT, RIGHT, EMPTY, UNSHIFT, IS_EMPTY, FIRST, REST
-from .reduction import (
-    to_array,
-    to_boolean,
-    to_integer,
-    to_generator,
-    to_integer_array,
-)
+from .funcs import CLOSED_RANGE, FOLD, MAP, MOD, RANGE, Z_COMBINATOR
+from .reduction import to_array, to_boolean, to_generator, to_integer, to_integer_array
+from .streams import MULTIPLES_OF, UPWARDS_OF, ZEROS
+from .struct import EMPTY, FIRST, IS_EMPTY, LEFT, PAIR, REST, RIGHT, UNSHIFT

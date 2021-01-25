@@ -99,7 +99,8 @@ def test_interpreter():
         b = 0
         while (a < 5) {
             a = a + 1
-            b = b + a + 1
+            b = b + a + 1 + 1
+            b = b - 1
         }
     """
     check_source(source, {"a": 5, "b": 20})

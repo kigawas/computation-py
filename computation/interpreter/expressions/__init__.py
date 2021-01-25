@@ -50,6 +50,20 @@ class Add(BinaryExpression):
 
 
 @dataclass
+class Sub(BinaryExpression):
+    left: Expression
+    right: Expression
+
+    @staticmethod
+    def op_str() -> str:
+        return "-"
+
+    @staticmethod
+    def build_atom(value):
+        return Number(value)
+
+
+@dataclass
 class Multiply(BinaryExpression):
     left: Expression
     right: Expression

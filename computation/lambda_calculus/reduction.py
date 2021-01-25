@@ -1,7 +1,7 @@
 from typing import Callable, Generator, List
 
-from .generics import IntF, BoolF, Endofunctor, ReductionFunctor, T
-from .struct import IS_EMPTY, FIRST, REST
+from .generics import BoolF, Endofunctor, IntF, ReductionFunctor, T
+from .struct import FIRST, IS_EMPTY, REST
 
 
 def to_integer(lb: Callable[[IntF], IntF]) -> int:

@@ -4,11 +4,24 @@ from lark import Lark, Token
 from lark import Transformer as _Transformer
 
 from ..exceptions import Unreachable
-from .expressions import Add, And, EqualTo, LessThan, Multiply, Number, Or, Variable
+from .expressions import (
+    Add,
+    And,
+    EqualTo,
+    LessThan,
+    Multiply,
+    Number,
+    Or,
+    Sub,
+    Variable,
+)
 from .expressions.abstract import BinaryExpression, Expression
 from .statements import Assign, DoNothing, If, Sequence, While
 
-# inspired by https://medium.com/@gvanrossum_83706/building-a-peg-parser-d4869b5958fb
+# inspired by
+# https://medium.com/@gvanrossum_83706/building-a-peg-parser-d4869b5958fb
+# https://medium.com/@gvanrossum_83706/left-recursive-peg-grammars-65dab3c580e1
+# note: lark is not exhaustive, so `expr: term ('+' term)*` won't work
 GRAMMAR = r"""
 %import common.ESCAPED_STRING   -> STRING
 %import common.INT    -> NUMBER
@@ -19,7 +32,7 @@ GRAMMAR = r"""
 OP_AND: "&&"
 OP_OR: "||"
 OP_EQ: "<" | "=="
-OP_ADD: "+"
+OP_ADD: "+" | "-"
 OP_MUL: "*"
 atom: NUMBER | NAME | "(" expr ")"
 
@@ -38,7 +51,7 @@ stmt: expr | if_stmt | while_stmt | assign_stmt
 stmts: stmt*
 """
 
-parser = Lark(GRAMMAR, start="stmts")
+parser = Lark(GRAMMAR, start="stmts", parser="lalr")
 
 
 def token_to_atom(token: Token) -> Expression:
@@ -89,7 +102,7 @@ class Transformer(_Transformer):
         return self._biexpr(items, ["<", "=="], [LessThan, EqualTo])
 
     def expr(self, items):
-        return self._biexpr(items, ["+"], [Add])
+        return self._biexpr(items, ["+", "-"], [Add, Sub])
 
     def mul_expr(self, items):
         return self._biexpr(items, ["*"], [Multiply])

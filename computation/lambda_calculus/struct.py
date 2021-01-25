@@ -1,4 +1,4 @@
-from .basic import TRUE, FALSE
+from .basic import FALSE, TRUE
 
 # pair
 PAIR = lambda x: lambda y: lambda f: f(x)(y)

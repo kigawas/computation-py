@@ -1,6 +1,6 @@
 from .basic import IF
-from .calc import SUB, IS_LESS_OR_EQUAL, IS_LESS, INCREMENT
-from .struct import UNSHIFT, FIRST, EMPTY, REST, IS_EMPTY
+from .calc import INCREMENT, IS_LESS, IS_LESS_OR_EQUAL, SUB
+from .struct import EMPTY, FIRST, IS_EMPTY, REST, UNSHIFT
 
 # Y combinator equiv
 Z_COMBINATOR = lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args)))
