@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
+from ..exceptions import Unreachable
 from .expressions import Boolean
 from .expressions.abstract import Expression, Statement
-from ..exceptions import Unreachable
 
 
 @dataclass

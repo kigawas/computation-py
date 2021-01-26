@@ -1,6 +1,5 @@
-from .basic import ONE, ZERO, IS_ZERO, NOT, TWO, FIVE, THREE
-
-from .struct import PAIR, RIGHT, LEFT
+from .basic import FIVE, IS_ZERO, NOT, ONE, THREE, TWO, ZERO
+from .struct import LEFT, PAIR, RIGHT
 
 # calculation
 INCREMENT = lambda n: lambda f: lambda x: f(n(f)(x))
