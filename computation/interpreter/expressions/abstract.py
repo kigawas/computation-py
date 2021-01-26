@@ -1,4 +1,15 @@
+import operator
 from typing import Any
+
+OP_MAP = {
+    "+": operator.add,
+    "-": operator.sub,
+    "*": operator.mul,
+    "<": operator.lt,
+    "and": operator.and_,
+    "or": operator.or_,
+    "==": operator.eq,
+}
 
 
 class Expression:
@@ -72,7 +83,7 @@ class BinaryExpression(Expression):
     @classmethod
     def op(cls, a: Any, b: Any) -> Any:
         op = cls.op_str()
-        return eval(f"{a} {op} {b}")
+        return OP_MAP[op](a, b)
 
     @property
     def to_python(self):
