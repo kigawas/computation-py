@@ -3,7 +3,9 @@ __all__ = [
     "ONE",
     "TWO",
     "THREE",
+    "FOUR",
     "FIVE",
+    "SEVEN",
     "IF",
     "NOT",
     "TRUE",
@@ -47,24 +49,11 @@ __all__ = [
     "to_integer_array",
 ]
 
-from .basic import FALSE, FIVE, IF, IS_ZERO, NOT, ONE, THREE, TRUE, TWO, ZERO
-from .calc import (
-    ADD,
-    DECREMENT,
-    FIFTEEN,
-    FOUR,
-    HUNDRED,
-    INCREMENT,
-    IS_LESS,
-    IS_LESS_OR_EQUAL,
-    MUL,
-    POW,
-    SEVEN,
-    SLIDE,
-    SUB,
-    TEN,
-)
-from .funcs import CLOSED_RANGE, FOLD, MAP, MOD, RANGE, Z_COMBINATOR
+from .basic import FALSE, ONE, TRUE, ZERO
+from .calculation import ADD, DECREMENT, INCREMENT, MUL, POW, SLIDE, SUB
+from .condition import IF, IS_LESS_OR_EQUAL, IS_ZERO, NOT
+from .func import CLOSED_RANGE, FOLD, MAP, MOD, RANGE, Z_COMBINATOR
+from .number import FIFTEEN, FIVE, FOUR, HUNDRED, SEVEN, TEN, THREE, TWO
 from .reduction import to_array, to_boolean, to_generator, to_integer, to_integer_array
 from .streams import MULTIPLES_OF, UPWARDS_OF, ZEROS
 from .struct import EMPTY, FIRST, IS_EMPTY, LEFT, PAIR, REST, RIGHT, UNSHIFT

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable, List, Optional
+from typing import Iterable, Optional
 
 from ..utils import detect
 from .farule import State
@@ -8,7 +8,7 @@ from .state import State as _State
 
 @dataclass(frozen=True)
 class Stack:
-    contents: List[State]
+    contents: list[State]
 
     def push(self, character):
         return Stack(self.contents + [character])
@@ -71,7 +71,7 @@ class PDARule:
 
 @dataclass
 class DPDARulebook:
-    rules: List[PDARule]
+    rules: list[PDARule]
 
     def rule_for(self, configuration, character):
         return detect(
@@ -94,7 +94,7 @@ class DPDARulebook:
 @dataclass
 class DPDA:
     _current_configuration: PDAConfiguration
-    accept_states: List[State]
+    accept_states: list[State]
     rulebook: DPDARulebook
 
     @property
@@ -132,7 +132,7 @@ class DPDA:
 class DPDADesign:
     start_state: State
     bottom_character: str
-    accept_states: List[State]
+    accept_states: list[State]
     rulebook: DPDARulebook
 
     @property
@@ -147,7 +147,7 @@ class DPDADesign:
 
 @dataclass
 class NPDARulebook:
-    rules: List[PDARule]
+    rules: list[PDARule]
 
     def rule_for(self, configuration, character):
         return [
@@ -211,7 +211,7 @@ class NPDA:
 class NPDADesign:
     start_state: State
     bottom_character: str
-    accept_states: List[State]
+    accept_states: list[State]
     rulebook: NPDARulebook
 
     @property

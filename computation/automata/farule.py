@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, FrozenSet, Iterable, List, Optional, Union
+from typing import Any, FrozenSet, Iterable, Optional, Union
 
 from ..exceptions import Unreachable
 from ..utils import detect
@@ -28,7 +28,7 @@ class FARule:
 
 @dataclass(frozen=True)
 class DFARulebook:
-    rules: List[FARule]
+    rules: list[FARule]
 
     def rule_for(self, state: State, character: Optional[str]) -> Optional[FARule]:
         return detect(self.rules, lambda rule: rule.applies_to(state, character))
@@ -42,7 +42,7 @@ class DFARulebook:
 
 @dataclass(frozen=True)
 class NFARulebook:
-    rules: List[FARule]
+    rules: list[FARule]
 
     @property
     def alphabet(self) -> FrozenSet[str]:
@@ -50,10 +50,10 @@ class NFARulebook:
             [rule.character for rule in self.rules if rule.character is not None]
         )
 
-    def rules_for(self, state: State, character: Optional[str]) -> List[FARule]:
+    def rules_for(self, state: State, character: Optional[str]) -> list[FARule]:
         return [r for r in self.rules if r.applies_to(state, character)]
 
-    def follow_rules_for(self, state: State, character: Optional[str]) -> List[State]:
+    def follow_rules_for(self, state: State, character: Optional[str]) -> list[State]:
         return [r.follow for r in self.rules_for(state, character)]
 
     def next_states(

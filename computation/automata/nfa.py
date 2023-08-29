@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, Optional, Tuple
 
 from .dfa import DFADesign
 from .farule import DFARulebook, FARule, NFARulebook, State
@@ -37,7 +37,7 @@ class NFA:
 @dataclass
 class NFADesign:
     start_state: State
-    accept_states: List[State]
+    accept_states: list[State]
     rulebook: NFARulebook
 
     @property
@@ -62,7 +62,7 @@ class NFASimulation:
             .current_states
         )
 
-    def rules_for(self, state: Iterable[State]) -> List[FARule]:
+    def rules_for(self, state: Iterable[State]) -> list[FARule]:
         alphabet = self.nfa_design.rulebook.alphabet
         return [
             FARule(frozenset(state), character, self.next_state(state, character))
@@ -71,9 +71,9 @@ class NFASimulation:
 
     def discover_states_and_rules(
         self, states: frozenset
-    ) -> Tuple[Iterable[Iterable[State]], List[FARule]]:
+    ) -> Tuple[Iterable[Iterable[State]], list[FARule]]:
         rules_list = [self.rules_for(state) for state in states]
-        rules: List[FARule] = sum(rules_list, [])
+        rules: list[FARule] = sum(rules_list, [])
         more_states = frozenset([rule.follow for rule in rules])
 
         if more_states.issubset(states):

@@ -1,3 +1,6 @@
+import pytest
+from lark.exceptions import UnexpectedCharacters
+
 from computation.interpreter.interpreter import Machine
 from computation.interpreter.parser import parse
 from computation.interpreter.statements import DoNothing
@@ -5,7 +8,7 @@ from computation.interpreter.statements import DoNothing
 
 def check_source(source: str, expected_env: dict, debug: bool = False):
     seq = parse(source)
-    env = Machine(seq, debug=debug).run().environment
+    env = Machine(seq, {}, debug=debug).run().environment
 
     for k, v in env.items():
         env[k] = v.value
@@ -15,10 +18,12 @@ def check_source(source: str, expected_env: dict, debug: bool = False):
     return seq
 
 
-def test_interpreter():
-    seq = parse(" ")
+def test_success():
+    source = " \n\n"
+    seq = parse(source)
     assert seq == DoNothing()
-    check_source(" ", {})
+
+    check_source(source, {})
 
     source = """
         x = 5
@@ -106,3 +111,8 @@ def test_interpreter():
         }
     """
     check_source(source, {"a": 5, "b": 20})
+
+
+def test_error():
+    with pytest.raises(UnexpectedCharacters):
+        parse("a=0;b=1")

@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
 class Tape:
-    left: List[str]
+    left: list[str]
     middle: str
-    right: List[str]
+    right: list[str]
     blank: str = "_"
 
     def __str__(self):

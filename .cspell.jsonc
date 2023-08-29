@@ -1,0 +1,18 @@
+{
+  "ignoreWords": [
+    "lalr"
+  ],
+  "ignorePaths": [
+    ".cspell.jsonc",
+    "LICENSE"
+  ],
+  "words": [
+    "biexpr",
+    "Endofunctor",
+    "farule",
+    "isort",
+    "rulebook",
+    "UNSHIFT",
+    "venv"
+  ]
+}

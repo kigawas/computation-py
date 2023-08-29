@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional
 
 from .farule import DFARulebook, State
 
@@ -9,7 +9,7 @@ from .farule import DFARulebook, State
 @dataclass
 class DFA:
     current_state: State
-    accept_states: List[State]
+    accept_states: list[State]
     rulebook: DFARulebook
 
     @property
@@ -29,7 +29,7 @@ class DFA:
 @dataclass
 class DFADesign:
     start_state: State
-    accept_states: List[State]
+    accept_states: list[State]
     rulebook: DFARulebook
 
     @property

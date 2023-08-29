@@ -1,8 +1,6 @@
 class Machine:
-    def __init__(self, expression, environment: dict = None, debug: bool = False):
+    def __init__(self, expression, environment: dict, debug: bool = False):
         self.expression = expression
-        if environment is None:
-            environment = {}
         self.environment = environment
         self.debug = debug
 
