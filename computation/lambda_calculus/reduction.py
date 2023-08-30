@@ -1,4 +1,4 @@
-from typing import Callable, Generator, List
+from typing import Callable, Generator
 
 from .generics import BoolF, Endofunctor, IntF, ReductionFunctor, T
 from .struct import FIRST, IS_EMPTY, REST
@@ -21,9 +21,9 @@ def to_generator(
         lb = REST(lb)
 
 
-def to_array(lb: Endofunctor, callback: ReductionFunctor[T]) -> List[T]:
+def to_array(lb: Endofunctor, callback: ReductionFunctor[T]) -> list[T]:
     return list(to_generator(lb, callback))
 
 
-def to_integer_array(lb: Endofunctor) -> List[int]:
+def to_integer_array(lb: Endofunctor) -> list[int]:
     return to_array(lb, to_integer)

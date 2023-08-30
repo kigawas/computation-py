@@ -1,7 +1,7 @@
 # computation-py
 
 [![License](https://img.shields.io/github/license/kigawas/computation-py.svg)](https://github.com/kigawas/computation-py)
-[![CI](https://img.shields.io/github/workflow/status/kigawas/computation-py/Build)](https://github.com/kigawas/computation-py/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/kigawas/computation-py/ci.yml?branch=master)](https://github.com/kigawas/computation-py/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/kigawas/computation-py.svg)](https://codecov.io/gh/kigawas/computation-py)
 
 Python implementation for [Understanding Computation](http://computationbook.com/).
@@ -26,8 +26,10 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 
 5. Simulating a Turing machine
 
-6. Stay tuned..
+6. Lambda calculus and Church numbers
+
+7. Stay tuned..
 
 ## What is your Python's version
 
-Python 3.9
+Python 3.9+

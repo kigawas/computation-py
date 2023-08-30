@@ -1,5 +1,5 @@
 from itertools import islice
-from typing import Callable, Generator, List, TypeVar
+from typing import Callable, Generator, TypeVar
 
 from computation.lambda_calculus import (
     ADD,
@@ -7,6 +7,7 @@ from computation.lambda_calculus import (
     DECREMENT,
     EMPTY,
     FALSE,
+    FIFTEEN,
     FIRST,
     FIVE,
     FOLD,
@@ -28,6 +29,7 @@ from computation.lambda_calculus import (
     RANGE,
     REST,
     RIGHT,
+    SEVEN,
     SUB,
     TEN,
     THREE,
@@ -47,44 +49,40 @@ T = TypeVar("T")
 U = TypeVar("U")
 
 
-def mod(m: int, n: int) -> int:
-    return mod(m - n, n) if m >= n else m
+def test_reference_algorithms():
+    def mod(m: int, n: int) -> int:
+        return mod(m - n, n) if m >= n else m
 
+    def range_(m: int, n: int):
+        # [m, n)
+        return [m] + range_(m + 1, n) if m < n else []
 
-def range_(m: int, n: int):
-    # [m, n)
-    return [m] + range_(m + 1, n) if m < n else []
+    def fold(arr: list[T], init: U, func: Callable[[T, U], U]) -> U:
+        return func(arr[0], fold(arr[1:], init, func)) if arr else init
 
+    def map_(arr: list[T], func: Callable[[T], T]) -> list[T]:
+        return fold(arr, [], lambda x, l: [func(x)] + l)
 
-def fold(arr: List[T], init: U, func: Callable[[T, U], U]) -> U:
-    return func(arr[0], fold(arr[1:], init, func)) if arr else init
+    def unshift(gen: Generator[int, None, None], x: int):
+        yield x
+        yield from gen
 
+    def zeros():
+        # infinite zeros
+        yield from unshift(zeros(), 0)
 
-def map_(arr: List[T], func: Callable[[T], T]) -> List[T]:
-    return fold(arr, [], lambda x, l: [func(x)] + l)
+    def upwards_of(n: int):
+        # infinite, starting from n
+        yield from unshift(upwards_of(n + 1), n)
 
+    def multiples_of(m: int):
+        # infinite, multiples of m
+        # e.g. 2, 4, 6, 8, ...
+        def g(n: int):
+            yield from unshift(g(n + m), n)
 
-def unshift(gen: Generator[int, None, None], x: int):
-    yield x
-    yield from gen
+        return g(m)
 
-
-def zeros():
-    yield from unshift(zeros(), 0)
-
-
-def upwards_of(n: int):
-    yield from unshift(upwards_of(n + 1), n)
-
-
-def multiples_of(m: int):
-    def g(n: int):
-        yield from unshift(g(n + m), n)
-
-    return g(m)
-
-
-def test_algorithms():
     assert mod(5, 3) == 2
     assert mod(15, 4) == 3
     assert range_(1, 3) == [1, 2]
@@ -98,13 +96,21 @@ def test_algorithms():
 
 
 def test_number():
-    assert to_integer(ZERO) == 0
-    assert to_integer(ONE) == 1
-    assert to_integer(TWO) == 2
-    assert to_integer(THREE) == 3
-    assert to_integer(FOUR) == 4
-    assert to_integer(TEN) == 10
-    assert to_integer(HUNDRED) == 100
+    church_numbers = [
+        ZERO,
+        ONE,
+        TWO,
+        THREE,
+        FOUR,
+        FIVE,
+        SEVEN,
+        TEN,
+        FIFTEEN,
+        HUNDRED,
+    ]
+    numbers = [0, 1, 2, 3, 4, 5, 7, 10, 15, 100]
+    for church_number, number in zip(church_numbers, numbers):
+        assert to_integer(church_number) == number
 
 
 def test_cond():

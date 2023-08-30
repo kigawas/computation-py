@@ -78,16 +78,16 @@ class If(Statement):
                 return self.consequence, environment
             elif self.condition == Boolean(False):
                 return self.alternative, environment
-
-            raise Unreachable
+            else:
+                raise Unreachable
 
     def evaluate(self, environment):
         if self.condition.evaluate(environment) == Boolean(True):
             return self.consequence.evaluate(environment)
         elif self.condition.evaluate(environment) == Boolean(False):
             return self.alternative.evaluate(environment)
-
-        raise Unreachable
+        else:
+            raise Unreachable
 
     @property
     def to_python(self):

@@ -1,5 +1,5 @@
-from .basic import IF
-from .calc import INCREMENT, IS_LESS, IS_LESS_OR_EQUAL, SUB
+from .calculation import INCREMENT, SUB
+from .condition import IF, IS_LESS, IS_LESS_OR_EQUAL
 from .struct import EMPTY, FIRST, IS_EMPTY, REST, UNSHIFT
 
 # Y combinator equiv

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import List
 
 from ..exceptions import Unreachable
 from ..utils import detect
@@ -41,7 +40,7 @@ class TMRule:
 
 @dataclass
 class DTMRulebook:
-    rules: List[TMRule]
+    rules: list[TMRule]
 
     def applies_to(self, configuration: TMConfiguration):
         return self.rule_for(configuration) is not None

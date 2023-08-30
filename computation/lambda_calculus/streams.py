@@ -1,6 +1,6 @@
 from .basic import ZERO
-from .calc import ADD, INCREMENT
-from .funcs import Z_COMBINATOR
+from .calculation import ADD, INCREMENT
+from .func import Z_COMBINATOR
 from .struct import UNSHIFT
 
 # streams, see equivalent python code in test_lambda.py

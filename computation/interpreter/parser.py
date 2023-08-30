@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import Type
 
 from lark import Lark, Token
 from lark import Transformer as _Transformer
@@ -67,8 +67,8 @@ def eval_binary_expr(
     left,
     op,
     right,
-    expected_ops: List[str],
-    expr_classes: List[Type[BinaryExpression]],
+    expected_ops: list[str],
+    expr_classes: list[Type[BinaryExpression]],
 ):
     for expected_op, expr_class in zip(expected_ops, expr_classes):
         if op.value == expected_op:
@@ -77,7 +77,7 @@ def eval_binary_expr(
 
 
 class Transformer(_Transformer):
-    def atom(self, items) -> List[Expression]:
+    def atom(self, items) -> list[Expression]:
         res = []
         for item in items:
             if isinstance(item, Token):
@@ -108,13 +108,8 @@ class Transformer(_Transformer):
         return self._biexpr(items, ["*"], [Multiply])
 
     def if_stmt(self, items):
-        cond, conseq = items[0][0], items[1]
-        if len(items) == 2:
-            return If(cond, conseq, DoNothing())
-        elif len(items) == 3:
-            return If(cond, conseq, items[2])
-        else:
-            raise Unreachable
+        cond, seq, alt = items[0][0], items[1], items[2]
+        return If(cond, seq, alt or DoNothing())
 
     def while_stmt(self, items):
         return While(items[0][0], self.stmt(items[1:]))
