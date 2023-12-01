@@ -13,7 +13,7 @@ python = "^3.9"
 lark = "^1.1.8"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.7"
+black = "^23.11"
 flake8 = "^6.1.0"
 ipython = "^8.1.0"
 isort = "^5.12.0"
