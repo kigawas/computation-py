@@ -10,7 +10,7 @@ license = "MIT"
 python = "^3.9"
 
 # 3rd party
-lark = "^1.1.8"
+lark = "^1.1.9"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7"
