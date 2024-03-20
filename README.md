@@ -32,4 +32,4 @@ I just implemented equivalent codes from chapter to chapter, those contents are:
 
 ## What is your Python's version
 
-Python 3.9+
+Python 3.10+

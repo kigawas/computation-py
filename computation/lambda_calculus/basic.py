@@ -7,7 +7,6 @@ The two primary forces generate the four images.
 The four images generate the eight trigrams
 """
 
-
 ZERO = lambda _: lambda x: x
 ONE = lambda f: lambda x: f(x)
 TRUE = lambda x: lambda _: x
