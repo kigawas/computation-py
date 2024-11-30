@@ -13,7 +13,7 @@ python = "^3.10"
 lark = "^1.2.2"
 
 [tool.poetry.group.dev.dependencies]
-ipython = "^8.29.0"
+ipython = "^8.30.0"
 mypy = "^1.13.0"
 ruff = "^0.8.0"
 
