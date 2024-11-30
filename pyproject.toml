@@ -10,14 +10,14 @@ license = "MIT"
 python = "^3.10"
 
 # 3rd party
-lark = "^1.1.8"
+lark = "^1.2.2"
 
 [tool.poetry.group.dev.dependencies]
-ipython = "^8.26.0"
-mypy = "^1.5.0"
-ruff = "^0.5.5"
+ipython = "^8.29.0"
+mypy = "^1.13.0"
+ruff = "^0.8.0"
 
-# test
+[tool.poetry.group.test.dependencies]
 pytest = "^8.3.3"
 pytest-cov = "^6.0.0"
 
@@ -25,6 +25,16 @@ pytest-cov = "^6.0.0"
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core>=1.0.0"]
 
-[tool.isort]
-multi_line_output = 3
-profile = "black"
+[tool.pytest.ini_options]
+addopts = "--cov=computation"
+
+[tool.coverage.report]
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    "def __",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise Unreachable",
+    "raise NotImplementedError",
+    "print",
+]

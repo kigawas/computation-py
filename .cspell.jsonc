@@ -3,8 +3,12 @@
     "lalr"
   ],
   "ignorePaths": [
+    "LICENSE",
+    ".gitignore",
+    ".github/",
     ".cspell.jsonc",
-    "LICENSE"
+    "pyproject.toml",
+    "poetry.lock",
   ],
   "words": [
     "biexpr",
